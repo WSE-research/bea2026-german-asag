@@ -1,0 +1,36 @@
+{
+  "strategy": "C3: Structured Eval",
+  "split": "trial",
+  "model": "google/gemini-3-flash-preview",
+  "offset": 0,
+  "n_samples": 827,
+  "elapsed_seconds": 471.42,
+  "metrics": {
+    "n_scored": 827,
+    "n_errors": 0,
+    "accuracy": 0.6965,
+    "macro_f1": 0.7011,
+    "weighted_f1": 0.7004,
+    "qwk": 0.6915,
+    "per_class": {
+      "Correct": {
+        "precision": 0.7583,
+        "recall": 0.6557,
+        "f1": 0.7033,
+        "support": 244
+      },
+      "Partially correct": {
+        "precision": 0.5803,
+        "recall": 0.7542,
+        "f1": 0.6559,
+        "support": 297
+      },
+      "Incorrect": {
+        "precision": 0.8348,
+        "recall": 0.6713,
+        "f1": 0.7442,
+        "support": 286
+      }
+    }
+  }
+}

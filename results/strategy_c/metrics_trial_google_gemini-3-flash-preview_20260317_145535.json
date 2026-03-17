@@ -1,0 +1,39 @@
+{
+  "strategy": "C: Rubric + Few-Shot",
+  "split": "trial",
+  "model": "google/gemini-3-flash-preview",
+  "examples_per_label": 2,
+  "seed": 42,
+  "n_samples": 280,
+  "n_workers": 5,
+  "elapsed_seconds": 143.85,
+  "timestamp": "20260317_145535",
+  "metrics": {
+    "n_scored": 255,
+    "n_errors": 25,
+    "accuracy": 0.7529,
+    "macro_f1": 0.7538,
+    "weighted_f1": 0.7541,
+    "qwk": 0.7183,
+    "per_class": {
+      "Correct": {
+        "precision": 0.7826,
+        "recall": 0.7297,
+        "f1": 0.7552,
+        "support": 74
+      },
+      "Partially correct": {
+        "precision": 0.6768,
+        "recall": 0.7528,
+        "f1": 0.7128,
+        "support": 89
+      },
+      "Incorrect": {
+        "precision": 0.8161,
+        "recall": 0.7717,
+        "f1": 0.7933,
+        "support": 92
+      }
+    }
+  }
+}

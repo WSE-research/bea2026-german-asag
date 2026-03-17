@@ -12,8 +12,13 @@ import os
 import random
 import threading
 import time
+from pathlib import Path
 
 import httpx
+from dotenv import load_dotenv
+
+# Load .env from project root
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +29,7 @@ _RR_LOCK = threading.Lock()
 _RR_INDEX = 0
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-DEFAULT_MODEL = "google/gemini-3.0-flash"
+DEFAULT_MODEL = "google/gemini-3-flash-preview"
 
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 
@@ -104,7 +109,7 @@ def call_openrouter(
     user_prompt: str,
     model: str | None = None,
     max_tokens: int = 300,
-    temperature: float = 0.2,
+    temperature: float = float(os.environ.get("OPENROUTER_TEMPERATURE", "0.2")),
     json_mode: bool = True,
     timeout: float = 30.0,
 ) -> dict:
