@@ -1,0 +1,36 @@
+{
+  "strategy": "C2: Tuned Few-Shot",
+  "split": "trial",
+  "model": "google/gemini-3-flash-preview",
+  "offset": 0,
+  "n_samples": 827,
+  "elapsed_seconds": 505.01,
+  "metrics": {
+    "n_scored": 827,
+    "n_errors": 0,
+    "accuracy": 0.7207,
+    "macro_f1": 0.7243,
+    "weighted_f1": 0.7224,
+    "qwk": 0.7096,
+    "per_class": {
+      "Correct": {
+        "precision": 0.7305,
+        "recall": 0.7664,
+        "f1": 0.748,
+        "support": 244
+      },
+      "Partially correct": {
+        "precision": 0.6369,
+        "recall": 0.697,
+        "f1": 0.6656,
+        "support": 297
+      },
+      "Incorrect": {
+        "precision": 0.8211,
+        "recall": 0.7063,
+        "f1": 0.7594,
+        "support": 286
+      }
+    }
+  }
+}
