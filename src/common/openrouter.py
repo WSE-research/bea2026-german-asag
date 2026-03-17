@@ -1,0 +1,268 @@
+"""
+OpenRouter API client with key rotation and retry logic.
+
+Provides a reliable interface to the OpenRouter chat completions API
+with thread-safe round-robin key selection, JSON mode support, and
+exponential backoff with jitter on transient failures.
+"""
+
+import json
+import logging
+import os
+import random
+import threading
+import time
+
+import httpx
+
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Key rotation state (thread-safe round-robin)
+# ---------------------------------------------------------------------------
+_RR_LOCK = threading.Lock()
+_RR_INDEX = 0
+
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+DEFAULT_MODEL = "google/gemini-3.0-flash"
+
+RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
+
+
+# ---------------------------------------------------------------------------
+# Configuration helpers
+# ---------------------------------------------------------------------------
+
+def get_api_keys() -> list[str]:
+    """Load API keys from environment variables.
+
+    Checks ``OPENROUTER_API_KEYS`` (comma-separated) first, then falls back
+    to the single ``OPENROUTER_API_KEY`` variable.
+
+    Returns:
+        List of API key strings.
+
+    Raises:
+        EnvironmentError: If neither variable is set or all values are empty.
+    """
+    multi = os.environ.get("OPENROUTER_API_KEYS", "")
+    if multi.strip():
+        keys = [k.strip() for k in multi.split(",") if k.strip()]
+        if keys:
+            return keys
+
+    single = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if single:
+        return [single]
+
+    raise EnvironmentError(
+        "No OpenRouter API key found. Set OPENROUTER_API_KEYS (comma-separated) "
+        "or OPENROUTER_API_KEY in your environment."
+    )
+
+
+def get_model() -> str:
+    """Return the model identifier from ``OPENROUTER_MODEL`` or the default.
+
+    Default: ``google/gemini-3.0-flash``
+    """
+    return os.environ.get("OPENROUTER_MODEL", DEFAULT_MODEL).strip()
+
+
+# ---------------------------------------------------------------------------
+# Internal helpers
+# ---------------------------------------------------------------------------
+
+def _next_key(keys: list[str]) -> str:
+    """Select the next API key via thread-safe round-robin."""
+    global _RR_INDEX
+    with _RR_LOCK:
+        key = keys[_RR_INDEX % len(keys)]
+        _RR_INDEX += 1
+    return key
+
+
+def _parse_json_response(text: str) -> dict:
+    """Parse JSON from an LLM response, stripping markdown fences if present."""
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        # Strip opening fence (```json or ```)
+        first_newline = cleaned.index("\n")
+        cleaned = cleaned[first_newline + 1:]
+        if cleaned.endswith("```"):
+            cleaned = cleaned[:-3]
+        cleaned = cleaned.strip()
+    return json.loads(cleaned)
+
+
+# ---------------------------------------------------------------------------
+# Core API call
+# ---------------------------------------------------------------------------
+
+def call_openrouter(
+    system_prompt: str,
+    user_prompt: str,
+    model: str | None = None,
+    max_tokens: int = 300,
+    temperature: float = 0.2,
+    json_mode: bool = True,
+    timeout: float = 30.0,
+) -> dict:
+    """Call the OpenRouter chat completions API.
+
+    Selects an API key via round-robin, builds the request payload, sends it,
+    and returns the parsed JSON from the assistant's response.
+
+    Args:
+        system_prompt: System-level instruction for the LLM.
+        user_prompt: The user message / scoring prompt.
+        model: Model identifier. Defaults to ``get_model()``.
+        max_tokens: Maximum tokens in the response.
+        temperature: Sampling temperature.
+        json_mode: If True, requests ``{"type": "json_object"}`` response format.
+        timeout: HTTP request timeout in seconds.
+
+    Returns:
+        Parsed JSON dict from the LLM response content.
+
+    Raises:
+        httpx.HTTPStatusError: On non-2xx responses.
+        json.JSONDecodeError: If the response is not valid JSON.
+    """
+    keys = get_api_keys()
+    api_key = _next_key(keys)
+    resolved_model = model or get_model()
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://github.com/bea2026-german-asag",
+        "X-Title": "BEA 2026 German ASAG",
+    }
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+
+    payload: dict = {
+        "model": resolved_model,
+        "messages": messages,
+        "max_tokens": max_tokens,
+        "temperature": temperature,
+    }
+    if json_mode:
+        payload["response_format"] = {"type": "json_object"}
+
+    logger.debug(
+        "OpenRouter request: model=%s, tokens=%d, temp=%.2f, json=%s",
+        resolved_model,
+        max_tokens,
+        temperature,
+        json_mode,
+    )
+
+    with httpx.Client(timeout=timeout) as client:
+        response = client.post(OPENROUTER_URL, headers=headers, json=payload)
+        response.raise_for_status()
+
+    body = response.json()
+    content = body["choices"][0]["message"]["content"]
+
+    logger.debug("OpenRouter response length: %d chars", len(content))
+
+    return _parse_json_response(content)
+
+
+# ---------------------------------------------------------------------------
+# Retry wrapper
+# ---------------------------------------------------------------------------
+
+def call_with_retry(
+    system_prompt: str,
+    user_prompt: str,
+    max_attempts: int = 4,
+    base_delay: float = 0.5,
+    max_delay: float = 5.0,
+    **kwargs,
+) -> dict:
+    """Call OpenRouter with exponential backoff and jitter on transient errors.
+
+    Retries on HTTP status codes 429, 500, 502, 503, and 504. On each retry
+    the round-robin key index advances automatically (via ``call_openrouter``),
+    distributing load across available keys.
+
+    Args:
+        system_prompt: System-level instruction for the LLM.
+        user_prompt: The user message / scoring prompt.
+        max_attempts: Maximum number of attempts (including the first).
+        base_delay: Initial delay in seconds before the first retry.
+        max_delay: Cap on the backoff delay in seconds.
+        **kwargs: Forwarded to ``call_openrouter``.
+
+    Returns:
+        Parsed JSON dict from the LLM response content.
+
+    Raises:
+        httpx.HTTPStatusError: If all attempts are exhausted.
+        json.JSONDecodeError: If the final attempt returns non-JSON.
+    """
+    last_exc: Exception | None = None
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return call_openrouter(system_prompt, user_prompt, **kwargs)
+
+        except httpx.HTTPStatusError as exc:
+            status = exc.response.status_code
+            last_exc = exc
+
+            if status not in RETRYABLE_STATUS_CODES or attempt == max_attempts:
+                logger.error(
+                    "OpenRouter HTTP %d on attempt %d/%d (non-retryable or final)",
+                    status,
+                    attempt,
+                    max_attempts,
+                )
+                raise
+
+            delay = min(base_delay * (2 ** (attempt - 1)), max_delay)
+            jitter = random.uniform(0, delay * 0.5)
+            wait = delay + jitter
+
+            logger.warning(
+                "OpenRouter HTTP %d on attempt %d/%d — retrying in %.2fs",
+                status,
+                attempt,
+                max_attempts,
+                wait,
+            )
+            time.sleep(wait)
+
+        except (httpx.TimeoutException, httpx.ConnectError) as exc:
+            last_exc = exc
+
+            if attempt == max_attempts:
+                logger.error(
+                    "OpenRouter connection error on attempt %d/%d: %s",
+                    attempt,
+                    max_attempts,
+                    exc,
+                )
+                raise
+
+            delay = min(base_delay * (2 ** (attempt - 1)), max_delay)
+            jitter = random.uniform(0, delay * 0.5)
+            wait = delay + jitter
+
+            logger.warning(
+                "OpenRouter connection error on attempt %d/%d — retrying in %.2fs: %s",
+                attempt,
+                max_attempts,
+                wait,
+                exc,
+            )
+            time.sleep(wait)
+
+    # Should not reach here, but satisfy the type checker
+    raise last_exc  # type: ignore[misc]
