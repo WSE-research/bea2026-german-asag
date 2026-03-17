@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets & credentials
+.env
+*.key
+
+# Model artifacts (large)
+models/
+*.bin
+*.safetensors
+*.gguf
+
+# Logs
+logs/
+*.log
+wandb/
+
+# Submissions (track separately)
+# submissions/
+
+# Claude Code
+.claude/
