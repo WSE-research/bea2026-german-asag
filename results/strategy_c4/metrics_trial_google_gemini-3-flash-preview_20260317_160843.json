@@ -1,0 +1,38 @@
+{
+  "strategy": "C4: Smart Example Selection",
+  "split": "trial",
+  "model": "google/gemini-3-flash-preview",
+  "offset": 0,
+  "n_boundary": 2,
+  "n_similar": 1,
+  "n_samples": 827,
+  "elapsed_seconds": 375.96,
+  "metrics": {
+    "n_scored": 827,
+    "n_errors": 0,
+    "accuracy": 0.7304,
+    "macro_f1": 0.7336,
+    "weighted_f1": 0.7321,
+    "qwk": 0.7351,
+    "per_class": {
+      "Correct": {
+        "precision": 0.7459,
+        "recall": 0.7459,
+        "f1": 0.7459,
+        "support": 244
+      },
+      "Partially correct": {
+        "precision": 0.6417,
+        "recall": 0.6936,
+        "f1": 0.6667,
+        "support": 297
+      },
+      "Incorrect": {
+        "precision": 0.8244,
+        "recall": 0.7552,
+        "f1": 0.7883,
+        "support": 286
+      }
+    }
+  }
+}
