@@ -67,6 +67,16 @@ def _ensure_examples_loaded():
     _question_examples = _build_question_examples(_train_data, _examples_per_label, _seed)
 
 
+def get_examples_for_sample(sample: dict) -> list[dict]:
+    """Return few-shot examples for a sample, excluding the sample itself.
+
+    Public API for use by ensemble and other strategies that reuse C2 examples.
+    """
+    _ensure_examples_loaded()
+    all_examples = _question_examples.get(sample["question_id"], [])
+    return [ex for ex in all_examples if ex["id"] != sample["id"]]
+
+
 def score_sample(sample: dict) -> dict:
     _ensure_examples_loaded()
 

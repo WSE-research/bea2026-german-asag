@@ -15,7 +15,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.common.data_loader import load_train_3way, load_trial_3way
+from src.common.data_loader import load_train_3way, load_trial_3way, load_test_3way
+from src.common.batch_runner import compile_submission_from_predictions
 from src.common.openrouter import get_model
 from src.strategy_c2_fewshot_tuned.scorer import configure, score_sample
 
@@ -92,7 +93,7 @@ def compute_metrics(results: list[dict]) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description="Strategy C2: Tuned Few-Shot Scoring")
-    parser.add_argument("--split", choices=["train", "trial"], default="trial")
+    parser.add_argument("--split", choices=["train", "trial", "test"], default="trial")
     parser.add_argument("--workers", type=int, default=5)
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--offset", type=int, default=0, help="Skip first N samples")
@@ -115,7 +116,12 @@ def main():
     configure(examples_per_label=args.examples_per_label, seed=args.seed)
 
     logger.info("Loading %s data...", args.split)
-    data = load_trial_3way() if args.split == "trial" else load_train_3way()
+    if args.split == "test":
+        data = load_test_3way()
+    elif args.split == "trial":
+        data = load_trial_3way()
+    else:
+        data = load_train_3way()
     data = data[args.offset:]
     if args.limit:
         data = data[:args.limit]
@@ -172,8 +178,14 @@ def main():
     with metrics_path.open("w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 
+    # Compile submission files
+    for track in ("3way", "2way"):
+        sub_path = RESULTS_DIR / f"submission_{args.split}_{track}_{timestamp}.json"
+        compile_submission_from_predictions(results, sub_path, track=track)
+
     print(f"\n  Predictions: {pred_path}")
     print(f"  Metrics:     {metrics_path}")
+    print(f"  Submissions: {RESULTS_DIR / f'submission_{args.split}_*.json'}")
 
 
 if __name__ == "__main__":

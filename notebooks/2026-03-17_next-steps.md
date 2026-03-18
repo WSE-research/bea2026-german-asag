@@ -18,41 +18,43 @@ parent: "[[bea26-shared-task]]"
 | **C4 (smart examples)** | **0.735** | **+boundary-focused + TF-IDF similarity selection** |
 | Ensemble v1 | pending | 4 cheap models majority vote |
 
-## Next Ensemble: Frontier-Cheap Models (v2)
+## Ensemble v2: Frontier-Cheap Models — TESTED 2026-03-18
 
-The first ensemble used somewhat outdated models. The next attempt should use the strongest cheap/mid-tier models available on OpenRouter as of March 2026:
+> **Result: Failed.** None of the candidate models matched Gemini Flash.
+> Full analysis: `notebooks/2026-03-18_model-screening.md`
 
-### Models to test:
+### Screening results (100 samples, C2 prompt)
 
-| Model | OpenRouter ID | Input $/M | Output $/M | Why |
-|-------|--------------|-----------|------------|-----|
-| **Gemini 3 Flash** | `google/gemini-3-flash-preview` | $0.50 | $3.00 | Current best single model, #1 Academia |
-| **DeepSeek V3.2** | `deepseek/deepseek-chat` | $0.26 | $0.38 | GPT-5 class reasoning, very cheap |
-| **MiniMax M2.5** | `minimax/minimax-m2.5` | $0.20 | $1.20 | SOTA productivity, cheapest |
-| **Kimi K2.5** | `moonshotai/kimi-k2.5` | $0.45 | $2.20 | Strong reasoning + multimodal |
+| Model | QWK | Status |
+|-------|-----|--------|
+| **Gemini 3 Flash** | **0.670** | baseline |
+| DeepSeek V3.2 | 0.506 | eliminated — weak on German |
+| MiniMax M2.5 | N/A | eliminated — mandatory reasoning (25x cost) |
+| Kimi K2.5 | N/A | eliminated — mandatory reasoning (stalls) |
+| Mistral Small 4 | blocked | OpenRouter privacy settings |
+| GPT-5.4 Nano | blocked | OpenRouter privacy settings |
 
-### Run command (when ready):
+### Key learnings
 
-```bash
-cd "C:\Users\jonas.gwozdz\Git Projekte\bea2026-german-asag"
+- **Reasoning models (MiniMax, Kimi) are incompatible with cheap batch scoring** — they burn all `max_tokens` on internal chain-of-thought before producing output
+- **DeepSeek V3.2 over-predicts "Partially correct" on German** — 73.5% recall but only 45.5% precision
+- **Gemini Flash dominates German ASAG** across all 8 models tested (+0.13–0.16 QWK gap to second-best)
 
-# First verify all models work
-python -m src.ensemble.run --split trial --limit 3 --workers 1 \
-  --models "google/gemini-3-flash-preview,deepseek/deepseek-chat,minimax/minimax-m2.5,moonshotai/kimi-k2.5"
+## Revised Next Steps (2026-03-18)
 
-# If smoke test passes, run full trial
-python -m src.ensemble.run --split trial --workers 2 \
-  --models "google/gemini-3-flash-preview,deepseek/deepseek-chat,minimax/minimax-m2.5,moonshotai/kimi-k2.5"
-```
+### High priority
+- [ ] C4 hyperparameter sweep on Gemini Flash:
+  - `--n-similar 2 --n-boundary 2`
+  - `--n-similar 2 --n-boundary 3`
+  - `--n-similar 1 --n-boundary 3`
+- [ ] Unblock Mistral Small 4 / GPT-5.4 Nano (OpenRouter privacy settings) and retest
+- [ ] Multi-seed self-ensemble: run C4 with seeds 42, 123, 456 → majority vote
 
-### Also try: C4 + ensemble v2
+### When test data arrives (2026-03-21)
+- [ ] Score test set with best C4 config
+- [ ] Score test set with self-ensemble if it beats single run
+- [ ] Generate submission files (now auto-compiled by run scripts)
 
-Combine the smart example selection from C4 with the ensemble. This would require a small code change to wire C4's SmartExampleSelector into the ensemble runner.
-
-## Other ideas to try next session
-
-- [ ] Run C4 with `--n-similar 2` (more similarity-based examples)
-- [ ] Run C4 with `--n-boundary 3` (more boundary examples)
-- [ ] Try combining C4 smart examples with ensemble v2 models
+### Stretch goals
 - [ ] Fine-tune an open-source model if budget allows (Qwen 7B on 7,899 samples)
-- [ ] Score test set when released (2026-03-21)
+- [ ] C4 + C2 cross-strategy ensemble on Gemini Flash

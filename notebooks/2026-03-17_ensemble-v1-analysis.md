@@ -53,7 +53,7 @@ Ran C2 prompt (tuned fewshot, 3 examples/label) across 4 cheap models via OpenRo
 
 2. **Gemini 3 Flash is significantly better at German ASAG** than Llama 4 Scout, Qwen3, and Gemma 3. This may reflect Gemini's stronger multilingual training.
 
-3. **The next ensemble (v2) should use frontier-class models** that are closer to Gemini's quality level: DeepSeek V3.2, MiniMax M2.5, Kimi K2.5. These are all top-20 on academia benchmarks and priced competitively.
+3. ~~**The next ensemble (v2) should use frontier-class models**~~ — **UPDATE (2026-03-18):** Tested DeepSeek V3.2, MiniMax M2.5, Kimi K2.5. All failed to match Gemini Flash. See `2026-03-18_model-screening.md`.
 
 4. **C4 (smart examples) with Gemini Flash alone (QWK 0.735) remains our best result** — better than any ensemble configuration tried so far.
 

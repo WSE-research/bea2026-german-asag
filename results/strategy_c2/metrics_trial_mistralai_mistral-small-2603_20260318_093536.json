@@ -1,0 +1,11 @@
+{
+  "strategy": "C2: Tuned Few-Shot",
+  "split": "trial",
+  "model": "mistralai/mistral-small-2603",
+  "offset": 0,
+  "n_samples": 100,
+  "elapsed_seconds": 2.7,
+  "metrics": {
+    "error": "No valid predictions"
+  }
+}

@@ -18,6 +18,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = PROJECT_ROOT / "data" / "raw" / "3way"
 TRAIN_PATH = DATA_DIR / "ALICE_LP_train_3way__v2.json"
 TRIAL_PATH = DATA_DIR / "ALICE_LP_trial_3way__v2.json"
+TEST_PATH = DATA_DIR / "ALICE_LP_test_3way.json"
 
 
 def load_alice_data(path: str | Path) -> list[dict]:
@@ -61,6 +62,15 @@ def load_trial_3way() -> list[dict]:
         List of trial sample dicts.
     """
     return load_alice_data(TRIAL_PATH)
+
+
+def load_test_3way() -> list[dict]:
+    """Load the 3-way test split from the standard location.
+
+    Test data is unlabeled (no ``score`` field). Returns:
+        List of test sample dicts.
+    """
+    return load_alice_data(TEST_PATH)
 
 
 def get_questions(data: list[dict]) -> dict[str, dict]:
