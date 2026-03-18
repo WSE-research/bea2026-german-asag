@@ -1,0 +1,36 @@
+{
+  "strategy": "C2: Tuned Few-Shot",
+  "split": "trial",
+  "model": "moonshotai/kimi-k2.5",
+  "offset": 0,
+  "n_samples": 100,
+  "elapsed_seconds": 653.53,
+  "metrics": {
+    "n_scored": 7,
+    "n_errors": 93,
+    "accuracy": 0.1429,
+    "macro_f1": 0.0833,
+    "weighted_f1": 0.0357,
+    "qwk": 0.0,
+    "per_class": {
+      "Correct": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 4
+      },
+      "Partially correct": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      "Incorrect": {
+        "precision": 0.1429,
+        "recall": 1.0,
+        "f1": 0.25,
+        "support": 1
+      }
+    }
+  }
+}

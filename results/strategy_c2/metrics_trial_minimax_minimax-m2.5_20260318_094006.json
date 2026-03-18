@@ -1,0 +1,36 @@
+{
+  "strategy": "C2: Tuned Few-Shot",
+  "split": "trial",
+  "model": "minimax/minimax-m2.5",
+  "offset": 0,
+  "n_samples": 100,
+  "elapsed_seconds": 170.35,
+  "metrics": {
+    "n_scored": 5,
+    "n_errors": 95,
+    "accuracy": 0.8,
+    "macro_f1": 0.2963,
+    "weighted_f1": 0.8889,
+    "qwk": 0.0,
+    "per_class": {
+      "Correct": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      },
+      "Partially correct": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      },
+      "Incorrect": {
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8889,
+        "support": 5
+      }
+    }
+  }
+}

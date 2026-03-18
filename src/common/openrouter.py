@@ -186,9 +186,9 @@ def call_openrouter(
 def call_with_retry(
     system_prompt: str,
     user_prompt: str,
-    max_attempts: int = 4,
-    base_delay: float = 0.5,
-    max_delay: float = 5.0,
+    max_attempts: int = 5,
+    base_delay: float = 2.0,
+    max_delay: float = 30.0,
     **kwargs,
 ) -> dict:
     """Call OpenRouter with exponential backoff and jitter on transient errors.

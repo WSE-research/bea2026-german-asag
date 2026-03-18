@@ -275,3 +275,50 @@ def compile_submission(
         output_path,
         track,
     )
+
+
+def compile_submission_from_predictions(
+    predictions: list[dict],
+    output_path: str | Path,
+    track: str = "3way",
+    score_key: str = "predicted_score",
+) -> None:
+    """Compile a list of prediction dicts into a submission JSON file.
+
+    Works with the prediction format used by C2/C3/C4/ensemble strategies.
+
+    Args:
+        predictions: List of prediction dicts with ``id``, ``question_id``,
+            and a score field (default key: ``predicted_score``).
+        output_path: Path for the output submission JSON.
+        track: ``"3way"`` (default) or ``"2way"``.
+        score_key: Key name for the predicted score in each dict.
+    """
+    if track not in ("3way", "2way"):
+        raise ValueError(f"track must be '3way' or '2way', got '{track}'")
+
+    output_path = Path(output_path)
+    submission = []
+    for r in predictions:
+        score = r.get(score_key, "")
+        if not score:
+            logger.warning("Skipping sample %s: no score", r.get("id", "?"))
+            continue
+        if track == "2way" and score == "Partially correct":
+            score = "Incorrect"
+        submission.append({
+            "id": r["id"],
+            "question_id": r["question_id"],
+            "score": score,
+        })
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as f:
+        json.dump(submission, f, ensure_ascii=False, indent=2)
+
+    logger.info(
+        "Compiled submission: %d entries -> %s (track=%s)",
+        len(submission),
+        output_path,
+        track,
+    )

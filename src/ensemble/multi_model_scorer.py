@@ -5,15 +5,11 @@ Uses the C2 (tuned fewshot) prompt strategy but swaps the model for each call.
 """
 import logging
 from collections import Counter
-from src.common.openrouter import call_with_retry, call_openrouter
-from src.common.data_loader import load_train_3way
+from src.common.openrouter import call_with_retry
 from src.strategy_c2_fewshot_tuned.prompt import build_system_prompt, build_user_prompt, parse_response
-
-# Reuse C2's example selection
 from src.strategy_c2_fewshot_tuned.scorer import (
     configure as c2_configure,
-    _ensure_examples_loaded,
-    _question_examples,
+    get_examples_for_sample,
 )
 
 logger = logging.getLogger(__name__)
@@ -62,11 +58,8 @@ def score_sample_ensemble(sample: dict) -> dict:
     - "agreement": number of distinct scores across models
     - "n_examples": number of examples used
     """
-    _ensure_examples_loaded()
-
     # Get examples (same for all models — fair comparison)
-    all_examples = _question_examples.get(sample["question_id"], [])
-    examples = [ex for ex in all_examples if ex["id"] != sample["id"]]
+    examples = get_examples_for_sample(sample)
 
     # Score with each model
     per_model = []
