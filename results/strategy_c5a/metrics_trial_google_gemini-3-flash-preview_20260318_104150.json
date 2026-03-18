@@ -1,0 +1,39 @@
+{
+  "strategy": "C5a: Post-Processing + Anti-Examples",
+  "split": "trial",
+  "model": "google/gemini-3-flash-preview",
+  "offset": 0,
+  "n_boundary": 2,
+  "n_similar": 2,
+  "n_samples": 827,
+  "elapsed_seconds": 371.62,
+  "n_overridden": 126,
+  "metrics": {
+    "n_scored": 826,
+    "n_errors": 1,
+    "accuracy": 0.6501,
+    "macro_f1": 0.6468,
+    "weighted_f1": 0.6459,
+    "qwk": 0.5434,
+    "per_class": {
+      "Correct": {
+        "precision": 0.7637,
+        "recall": 0.5697,
+        "f1": 0.6526,
+        "support": 244
+      },
+      "Partially correct": {
+        "precision": 0.6532,
+        "recall": 0.5473,
+        "f1": 0.5956,
+        "support": 296
+      },
+      "Incorrect": {
+        "precision": 0.596,
+        "recall": 0.8252,
+        "f1": 0.6921,
+        "support": 286
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "strategy": "C5d: Rubric Decomposition",
+  "split": "trial",
+  "model": "google/gemini-3-flash-preview",
+  "offset": 0,
+  "n_boundary": 1,
+  "n_similar": 1,
+  "n_samples": 100,
+  "elapsed_seconds": 48.15,
+  "metrics": {
+    "n_scored": 100,
+    "n_errors": 0,
+    "accuracy": 0.64,
+    "macro_f1": 0.6406,
+    "weighted_f1": 0.6421,
+    "qwk": 0.6104,
+    "per_class": {
+      "Correct": {
+        "precision": 0.7353,
+        "recall": 0.7143,
+        "f1": 0.7246,
+        "support": 35
+      },
+      "Partially correct": {
+        "precision": 0.5238,
+        "recall": 0.6471,
+        "f1": 0.5789,
+        "support": 34
+      },
+      "Incorrect": {
+        "precision": 0.7083,
+        "recall": 0.5484,
+        "f1": 0.6182,
+        "support": 31
+      }
+    },
+    "criteria_stats": {
+      "n_with_criteria": 100,
+      "avg_criteria_total": 1.96,
+      "avg_criteria_fulfilled": 1.1,
+      "avg_fulfillment_ratio": 0.5567
+    }
+  }
+}
