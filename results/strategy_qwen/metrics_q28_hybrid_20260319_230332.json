@@ -1,0 +1,49 @@
+{
+  "qwk": 0.7168,
+  "accuracy": 0.705,
+  "per_class": {
+    "Correct": {
+      "P": 0.675,
+      "R": 0.806,
+      "F1": 0.735,
+      "support": 67
+    },
+    "Partially correct": {
+      "P": 0.6,
+      "R": 0.524,
+      "F1": 0.559,
+      "support": 63
+    },
+    "Incorrect": {
+      "P": 0.831,
+      "R": 0.771,
+      "F1": 0.8,
+      "support": 70
+    }
+  },
+  "confusion": {
+    "Correct": {
+      "Correct": 54,
+      "Partially correct": 12,
+      "Incorrect": 1
+    },
+    "Partially correct": {
+      "Correct": 20,
+      "Partially correct": 33,
+      "Incorrect": 10
+    },
+    "Incorrect": {
+      "Correct": 6,
+      "Partially correct": 10,
+      "Incorrect": 54
+    }
+  },
+  "errors": 0,
+  "total": 200,
+  "scored": 200,
+  "elapsed_s": 41.0,
+  "variant": "q28_hybrid_knn_llm",
+  "model": "Qwen/Qwen3.5-27B-FP8",
+  "knn_used": 105,
+  "llm_used": 95
+}
