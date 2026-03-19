@@ -1,15 +1,15 @@
 ---
 type: experiment-log
 date: 2026-03-18
-tags: [phd, bea26, shared-task, experiment, ensemble, model-screening]
+tags: [phd, bea26, shared-task, experiment, majority-vote, model-screening]
 parent: "[[bea26-shared-task]]"
 ---
 
-# Model Screening — Frontier-Cheap Models for Ensemble v2
+# Model Screening — Frontier-Cheap Models for Majority Vote v2
 
 ## Motivation
 
-Ensemble v1 failed because the 4 models (Gemini Flash, Llama 4 Scout, Qwen3, Gemma 3) had too large a quality gap — weaker models outvoted the strong one. For v2, we screened 5 newer frontier-cheap models on a 100-sample subset of the trial set to find ensemble candidates closer to Gemini Flash's quality.
+Majority vote v1 failed because the 4 models (Gemini Flash, Llama 4 Scout, Qwen3, Gemma 3) had too large a quality gap — weaker models outvoted the strong one. For v2, we screened 5 newer frontier-cheap models on a 100-sample subset of the trial set to find vote candidates closer to Gemini Flash's quality.
 
 ## Method
 
@@ -70,24 +70,24 @@ This is a significant finding for anyone planning to use these models for batch 
 
 ### 2. DeepSeek V3.2 underperforms on German ASAG
 
-Despite being marketed as "GPT-5 class reasoning" and performing well on English benchmarks, DeepSeek V3.2 scored only QWK 0.506 on German short answer grading — 0.164 points below Gemini Flash. The main error pattern: massive over-prediction of "Partially correct" (73.5% recall, 45.5% precision). DeepSeek seems to default to the middle class when uncertain about German text, similar to but worse than the pattern seen in Llama 4 and Qwen3 in ensemble v1.
+Despite being marketed as "GPT-5 class reasoning" and performing well on English benchmarks, DeepSeek V3.2 scored only QWK 0.506 on German short answer grading — 0.164 points below Gemini Flash. The main error pattern: massive over-prediction of "Partially correct" (73.5% recall, 45.5% precision). DeepSeek seems to default to the middle class when uncertain about German text, similar to but worse than the pattern seen in Llama 4 and Qwen3 in majority vote v1.
 
 ### 3. Gemini 3 Flash remains dominant for German ASAG
 
-Across all models tested (ensemble v1 + v2 screening), Gemini Flash is the only model that achieves competitive QWK on German rubric-based scoring. The gap to the second-best model (Gemma 3 27B at 0.540 from v1, or DeepSeek V3.2 at 0.506 from v2) is massive: +0.13–0.16 QWK.
+Across all models tested (majority vote v1 + v2 screening), Gemini Flash is the only model that achieves competitive QWK on German rubric-based scoring. The gap to the second-best model (Gemma 3 27B at 0.540 from v1, or DeepSeek V3.2 at 0.506 from v2) is massive: +0.13–0.16 QWK.
 
-This likely reflects Gemini's stronger multilingual training and instruction-following on non-English tasks. For the BEA 2026 shared task, the focus should be on **optimizing the single-model strategy (C4 smart examples on Gemini Flash)** rather than pursuing ensembles.
+This likely reflects Gemini's stronger multilingual training and instruction-following on non-English tasks. For the BEA 2026 shared task, the focus should be on **optimizing the single-model strategy (C4 smart examples on Gemini Flash)** rather than pursuing multi-model majority votes.
 
 ### 4. OpenRouter privacy settings can silently block models
 
 The 404 error for Mistral Small 4 and GPT-5.4 Nano was not a model availability issue but an account-level privacy restriction. The error message ("No endpoints available matching your guardrail restrictions") is not immediately obvious as a privacy setting issue. Worth noting for reproducibility.
 
-## Implications for Ensemble Strategy
+## Implications for Majority Vote Strategy
 
-The ensemble v2 idea is effectively dead with the current model pool. The only viable path to an ensemble would be:
+The majority vote v2 idea is effectively dead with the current model pool. The only viable path to a multi-model majority vote would be:
 1. **Unblock Mistral Small 4 / GPT-5.4 Nano** and test whether they're competitive
-2. **Multi-seed self-ensemble:** Run Gemini Flash multiple times with different random seeds for example selection, then majority vote
-3. **C4 + C2 ensemble:** Use different prompting strategies on Gemini Flash and vote across strategies
+2. **Multi-seed majority vote:** Run Gemini Flash multiple times with different random seeds for example selection, then majority vote
+3. **C4 + C2 cross-strategy majority vote:** Use different prompting strategies on Gemini Flash and vote across strategies
 
 ## C4 Hyperparameter Sweep (same session)
 

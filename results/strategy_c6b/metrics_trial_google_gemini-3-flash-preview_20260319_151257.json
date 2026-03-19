@@ -1,0 +1,97 @@
+{
+  "strategy": "C6b: Claude-Optimized Prompt + Adaptive Difficulty",
+  "strategy_base": "C5c (adaptive difficulty) + C4 (smart examples)",
+  "split": "trial",
+  "model": "google/gemini-3-flash-preview",
+  "model_expected": "anthropic/claude-sonnet-4.6",
+  "offset": 0,
+  "seed": 42,
+  "workers": 3,
+  "limit": 50,
+  "tier_config": {
+    "easy": {
+      "n_boundary": 1,
+      "n_similar": 2
+    },
+    "medium": {
+      "n_boundary": 2,
+      "n_similar": 2
+    },
+    "hard": {
+      "n_boundary": 3,
+      "n_similar": 2
+    }
+  },
+  "difficulty_distribution": {
+    "medium": 47,
+    "easy": 24,
+    "hard": 7
+  },
+  "n_samples": 50,
+  "elapsed_seconds": 24.89,
+  "metrics": {
+    "n_scored": 50,
+    "n_errors": 0,
+    "accuracy": 0.54,
+    "macro_f1": 0.5066,
+    "weighted_f1": 0.5412,
+    "qwk": 0.4349,
+    "per_class": {
+      "Correct": {
+        "precision": 0.6875,
+        "recall": 0.6471,
+        "f1": 0.6667,
+        "support": 17
+      },
+      "Partially correct": {
+        "precision": 0.5417,
+        "recall": 0.5652,
+        "f1": 0.5532,
+        "support": 23
+      },
+      "Incorrect": {
+        "precision": 0.3,
+        "recall": 0.3,
+        "f1": 0.3,
+        "support": 10
+      }
+    },
+    "confusion_matrix": [
+      [
+        11,
+        5,
+        1
+      ],
+      [
+        4,
+        13,
+        6
+      ],
+      [
+        1,
+        6,
+        3
+      ]
+    ]
+  },
+  "cost_summary": {
+    "n_scored": 50,
+    "total_cost_usd": 0.034936,
+    "cost_per_sample_usd": 0.000699,
+    "total_prompt_tokens": 64334,
+    "total_completion_tokens": 923,
+    "avg_prompt_tokens": 1286.7,
+    "avg_completion_tokens": 18.5,
+    "total_reasoning_tokens": 0,
+    "total_cached_tokens": 0,
+    "avg_wall_clock_seconds": 1.402,
+    "avg_latency_ms": null,
+    "avg_generation_time_ms": null,
+    "providers": {},
+    "models": {
+      "google/gemini-3-flash-preview-20251217": 50
+    },
+    "finish_reasons": {}
+  },
+  "timestamp_utc": "2026-03-19T15:12:57.238278+00:00"
+}

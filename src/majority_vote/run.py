@@ -1,10 +1,11 @@
 """
-Ensemble: Multi-Model Majority Vote Scoring
+Multi-Model Majority Vote Scoring
 
-Runs C2 prompt across multiple cheap LLMs and combines via majority vote.
+Runs C2 prompt across multiple cheap LLMs and combines via majority vote
+(simple plurality voting, not learned ensemble aggregation).
 
 Usage:
-    python -m src.ensemble.run [--split trial] [--workers 2] [--limit N] [--models model1,model2,...]
+    python -m src.majority_vote.run [--split trial] [--workers 2] [--limit N] [--models model1,model2,...]
 """
 
 import argparse
@@ -18,18 +19,18 @@ from pathlib import Path
 
 from src.common.data_loader import load_train_3way, load_trial_3way, load_test_3way
 from src.common.batch_runner import compile_submission_from_predictions
-from src.ensemble.multi_model_scorer import (
+from src.majority_vote.multi_model_scorer import (
     configure,
-    score_sample_ensemble,
+    score_sample_majority_vote,
     DEFAULT_MODELS,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-RESULTS_DIR = PROJECT_ROOT / "results" / "ensemble"
+RESULTS_DIR = PROJECT_ROOT / "results" / "majority_vote"
 
 
 def score_one(sample: dict) -> dict:
-    """Score a single sample with the full ensemble."""
+    """Score a single sample with the full majority vote."""
     result = {
         "id": sample["id"],
         "question_id": sample["question_id"],
@@ -44,7 +45,7 @@ def score_one(sample: dict) -> dict:
         "error": None,
     }
     try:
-        pred = score_sample_ensemble(sample)
+        pred = score_sample_majority_vote(sample)
         result["predicted_score"] = pred["score"]
         result["confidence"] = pred["confidence"]
         result["agreement"] = pred["agreement"]
@@ -150,7 +151,7 @@ def compute_per_model_metrics(results: list[dict], models: list[str]) -> dict[st
 
 
 def compute_agreement_stats(results: list[dict]) -> dict:
-    """Compute agreement statistics across the ensemble."""
+    """Compute agreement statistics across the multi-model vote."""
     valid = [r for r in results if r.get("predicted_score")]
     if not valid:
         return {}
@@ -171,7 +172,7 @@ def compute_agreement_stats(results: list[dict]) -> dict:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Ensemble: Multi-Model Majority Vote Scoring")
+    parser = argparse.ArgumentParser(description="Multi-Model Majority Vote Scoring")
     parser.add_argument("--split", choices=["train", "trial", "test"], default="trial")
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--limit", type=int, default=None)
@@ -201,7 +202,7 @@ def main():
     active_models = models or DEFAULT_MODELS
 
     print("=" * 70)
-    print("  Ensemble: Multi-Model Majority Vote Scoring")
+    print("  Multi-Model Majority Vote Scoring")
     print("=" * 70)
     print(f"  Split: {args.split} | Workers: {args.workers} | Offset: {args.offset} | Limit: {args.limit or 'all'}")
     print(f"  Examples/label: {args.examples_per_label} | Seed: {args.seed}")
@@ -272,16 +273,16 @@ def main():
     print("  " + "-" * 66)
     if "error" not in ensemble_metrics:
         print(
-            f"  {'>> ENSEMBLE (majority vote) <<':<40s}  {ensemble_metrics['qwk']:>6.4f}  "
+            f"  {'>> MAJORITY VOTE (multi-model) <<':<40s}  {ensemble_metrics['qwk']:>6.4f}  "
             f"{ensemble_metrics['accuracy']:>6.4f}  {ensemble_metrics['weighted_f1']:>6.4f}  "
             f"{ensemble_metrics['n_scored']:>4d}"
         )
     else:
-        print(f"  {'>> ENSEMBLE <<':<40s}  Error: {ensemble_metrics['error']}")
+        print(f"  {'>> MAJORITY VOTE <<':<40s}  Error: {ensemble_metrics['error']}")
 
-    # --- Print ensemble detail ---
+    # --- Print majority vote detail ---
     print("\n" + "=" * 70)
-    print("  Ensemble Results (Detail)")
+    print("  Majority Vote Results (Detail)")
     print("=" * 70)
     if "error" not in ensemble_metrics:
         print(
@@ -345,7 +346,7 @@ def main():
 
     # Save metrics
     meta = {
-        "strategy": "Ensemble: Multi-Model Majority Vote",
+        "strategy": "Multi-Model Majority Vote",
         "split": args.split,
         "models": active_models,
         "n_models": len(active_models),

@@ -1,0 +1,97 @@
+{
+  "strategy": "C6: Claude Sonnet + Adaptive Difficulty",
+  "strategy_base": "C5c (adaptive difficulty) + C4 (smart examples)",
+  "split": "trial",
+  "model": "openai/gpt-5.4-mini",
+  "model_expected": "anthropic/claude-sonnet-4.6",
+  "offset": 0,
+  "seed": 42,
+  "workers": 3,
+  "limit": 50,
+  "tier_config": {
+    "easy": {
+      "n_boundary": 1,
+      "n_similar": 2
+    },
+    "medium": {
+      "n_boundary": 2,
+      "n_similar": 2
+    },
+    "hard": {
+      "n_boundary": 3,
+      "n_similar": 2
+    }
+  },
+  "difficulty_distribution": {
+    "medium": 47,
+    "easy": 24,
+    "hard": 7
+  },
+  "n_samples": 50,
+  "elapsed_seconds": 20.18,
+  "metrics": {
+    "n_scored": 50,
+    "n_errors": 0,
+    "accuracy": 0.52,
+    "macro_f1": 0.4877,
+    "weighted_f1": 0.5178,
+    "qwk": 0.4186,
+    "per_class": {
+      "Correct": {
+        "precision": 0.65,
+        "recall": 0.7647,
+        "f1": 0.7027,
+        "support": 17
+      },
+      "Partially correct": {
+        "precision": 0.5556,
+        "recall": 0.4348,
+        "f1": 0.4878,
+        "support": 23
+      },
+      "Incorrect": {
+        "precision": 0.25,
+        "recall": 0.3,
+        "f1": 0.2727,
+        "support": 10
+      }
+    },
+    "confusion_matrix": [
+      [
+        13,
+        2,
+        2
+      ],
+      [
+        6,
+        10,
+        7
+      ],
+      [
+        1,
+        6,
+        3
+      ]
+    ]
+  },
+  "cost_summary": {
+    "n_scored": 50,
+    "total_cost_usd": 0.05384,
+    "cost_per_sample_usd": 0.001077,
+    "total_prompt_tokens": 66171,
+    "total_completion_tokens": 936,
+    "avg_prompt_tokens": 1323.4,
+    "avg_completion_tokens": 18.7,
+    "total_reasoning_tokens": 0,
+    "total_cached_tokens": 0,
+    "avg_wall_clock_seconds": 1.083,
+    "avg_latency_ms": null,
+    "avg_generation_time_ms": null,
+    "providers": {},
+    "models": {
+      "openai/gpt-5.4-mini-20260317": 50
+    },
+    "finish_reasons": {}
+  },
+  "timestamp_utc": "2026-03-19T15:10:18.318893+00:00"
+}

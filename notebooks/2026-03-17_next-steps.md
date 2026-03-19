@@ -16,9 +16,9 @@ parent: "[[bea26-shared-task]]"
 | C (rubric+fewshot) | 0.718 | +random examples |
 | C2 (tuned, 3ex) | 0.709 | +boundary rules |
 | **C4 (smart examples)** | **0.735** | **+boundary-focused + TF-IDF similarity selection** |
-| Ensemble v1 | pending | 4 cheap models majority vote |
+| Majority vote v1 | pending | 4 cheap models majority vote |
 
-## Ensemble v2: Frontier-Cheap Models — TESTED 2026-03-18
+## Majority Vote v2: Frontier-Cheap Models — TESTED 2026-03-18
 
 > **Result: Failed.** None of the candidate models matched Gemini Flash.
 > Full analysis: `notebooks/2026-03-18_model-screening.md`
@@ -48,13 +48,13 @@ parent: "[[bea26-shared-task]]"
   - `--n-similar 2 --n-boundary 3`
   - `--n-similar 1 --n-boundary 3`
 - [ ] Unblock Mistral Small 4 / GPT-5.4 Nano (OpenRouter privacy settings) and retest
-- [ ] Multi-seed self-ensemble: run C4 with seeds 42, 123, 456 → majority vote
+- [ ] Multi-seed majority vote: run C4 with seeds 42, 123, 456 → majority vote
 
 ### When test data arrives (2026-03-21)
 - [ ] Score test set with best C4 config
-- [ ] Score test set with self-ensemble if it beats single run
+- [ ] Score test set with multi-seed majority vote if it beats single run
 - [ ] Generate submission files (now auto-compiled by run scripts)
 
 ### Stretch goals
 - [ ] Fine-tune an open-source model if budget allows (Qwen 7B on 7,899 samples)
-- [ ] C4 + C2 cross-strategy ensemble on Gemini Flash
+- [ ] C4 + C2 cross-strategy majority vote on Gemini Flash

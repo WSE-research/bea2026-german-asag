@@ -1,0 +1,56 @@
+{
+  "strategy": "C5c: Adaptive Difficulty",
+  "split": "trial",
+  "model": "google/gemini-3.1-flash-lite-preview",
+  "offset": 0,
+  "seed": 42,
+  "tier_config": {
+    "easy": {
+      "n_boundary": 1,
+      "n_similar": 2
+    },
+    "medium": {
+      "n_boundary": 2,
+      "n_similar": 2
+    },
+    "hard": {
+      "n_boundary": 3,
+      "n_similar": 2
+    }
+  },
+  "difficulty_distribution": {
+    "medium": 47,
+    "easy": 24,
+    "hard": 7
+  },
+  "n_samples": 50,
+  "elapsed_seconds": 23.01,
+  "metrics": {
+    "n_scored": 50,
+    "n_errors": 0,
+    "accuracy": 0.48,
+    "macro_f1": 0.4559,
+    "weighted_f1": 0.4855,
+    "qwk": 0.3504,
+    "per_class": {
+      "Correct": {
+        "precision": 0.625,
+        "recall": 0.5882,
+        "f1": 0.6061,
+        "support": 17
+      },
+      "Partially correct": {
+        "precision": 0.5,
+        "recall": 0.4783,
+        "f1": 0.4889,
+        "support": 23
+      },
+      "Incorrect": {
+        "precision": 0.25,
+        "recall": 0.3,
+        "f1": 0.2727,
+        "support": 10
+      }
+    }
+  }
+}
