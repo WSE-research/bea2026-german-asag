@@ -1,0 +1,48 @@
+{
+  "qwk": 0.3414,
+  "accuracy": 0.44,
+  "per_class": {
+    "Correct": {
+      "P": 1.0,
+      "R": 0.057,
+      "F1": 0.108,
+      "support": 35
+    },
+    "Partially correct": {
+      "P": 0.361,
+      "R": 0.647,
+      "F1": 0.463,
+      "support": 34
+    },
+    "Incorrect": {
+      "P": 0.541,
+      "R": 0.645,
+      "F1": 0.588,
+      "support": 31
+    }
+  },
+  "confusion": {
+    "Correct": {
+      "Correct": 2,
+      "Partially correct": 28,
+      "Incorrect": 5
+    },
+    "Partially correct": {
+      "Correct": 0,
+      "Partially correct": 22,
+      "Incorrect": 12
+    },
+    "Incorrect": {
+      "Correct": 0,
+      "Partially correct": 11,
+      "Incorrect": 20
+    }
+  },
+  "errors": 0,
+  "total": 100,
+  "scored": 100,
+  "elapsed_s": 119.0,
+  "samples_per_s": 0.84,
+  "variant": "q3_english_xml",
+  "model": "Qwen/Qwen2.5-32B-Instruct-AWQ"
+}

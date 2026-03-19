@@ -1,0 +1,48 @@
+{
+  "qwk": 0.5924,
+  "accuracy": 0.6,
+  "per_class": {
+    "Correct": {
+      "P": 0.657,
+      "R": 0.657,
+      "F1": 0.657,
+      "support": 35
+    },
+    "Partially correct": {
+      "P": 0.484,
+      "R": 0.441,
+      "F1": 0.462,
+      "support": 34
+    },
+    "Incorrect": {
+      "P": 0.647,
+      "R": 0.71,
+      "F1": 0.677,
+      "support": 31
+    }
+  },
+  "confusion": {
+    "Correct": {
+      "Correct": 23,
+      "Partially correct": 9,
+      "Incorrect": 3
+    },
+    "Partially correct": {
+      "Correct": 10,
+      "Partially correct": 15,
+      "Incorrect": 9
+    },
+    "Incorrect": {
+      "Correct": 2,
+      "Partially correct": 7,
+      "Incorrect": 22
+    }
+  },
+  "errors": 0,
+  "total": 100,
+  "scored": 100,
+  "elapsed_s": 44.1,
+  "samples_per_s": 2.27,
+  "variant": "q20_smart_2sim_extreme",
+  "model": "Qwen/Qwen3.5-27B-FP8"
+}

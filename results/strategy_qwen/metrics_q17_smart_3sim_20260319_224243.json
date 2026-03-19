@@ -1,0 +1,48 @@
+{
+  "qwk": 0.6297,
+  "accuracy": 0.62,
+  "per_class": {
+    "Correct": {
+      "P": 0.71,
+      "R": 0.629,
+      "F1": 0.667,
+      "support": 35
+    },
+    "Partially correct": {
+      "P": 0.487,
+      "R": 0.559,
+      "F1": 0.521,
+      "support": 34
+    },
+    "Incorrect": {
+      "P": 0.7,
+      "R": 0.677,
+      "F1": 0.689,
+      "support": 31
+    }
+  },
+  "confusion": {
+    "Correct": {
+      "Correct": 22,
+      "Partially correct": 11,
+      "Incorrect": 2
+    },
+    "Partially correct": {
+      "Correct": 8,
+      "Partially correct": 19,
+      "Incorrect": 7
+    },
+    "Incorrect": {
+      "Correct": 1,
+      "Partially correct": 9,
+      "Incorrect": 21
+    }
+  },
+  "errors": 0,
+  "total": 100,
+  "scored": 100,
+  "elapsed_s": 47.5,
+  "samples_per_s": 2.1,
+  "variant": "q17_smart_3sim",
+  "model": "Qwen/Qwen3.5-27B-FP8"
+}
