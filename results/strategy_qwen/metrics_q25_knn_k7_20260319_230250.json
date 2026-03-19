@@ -1,0 +1,47 @@
+{
+  "qwk": 0.6119,
+  "accuracy": 0.645,
+  "per_class": {
+    "Correct": {
+      "P": 0.642,
+      "R": 0.776,
+      "F1": 0.703,
+      "support": 67
+    },
+    "Partially correct": {
+      "P": 0.532,
+      "R": 0.524,
+      "F1": 0.528,
+      "support": 63
+    },
+    "Incorrect": {
+      "P": 0.772,
+      "R": 0.629,
+      "F1": 0.693,
+      "support": 70
+    }
+  },
+  "confusion": {
+    "Correct": {
+      "Correct": 52,
+      "Partially correct": 12,
+      "Incorrect": 3
+    },
+    "Partially correct": {
+      "Correct": 20,
+      "Partially correct": 33,
+      "Incorrect": 10
+    },
+    "Incorrect": {
+      "Correct": 9,
+      "Partially correct": 17,
+      "Incorrect": 44
+    }
+  },
+  "errors": 0,
+  "total": 200,
+  "scored": 200,
+  "elapsed_s": 0.8,
+  "variant": "q25_knn_k7",
+  "model": "TF-IDF_kNN"
+}
