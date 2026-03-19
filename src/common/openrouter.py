@@ -31,9 +31,9 @@ logger = logging.getLogger(__name__)
 _RR_LOCK = threading.Lock()
 _RR_INDEX = 0
 
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+OPENROUTER_URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")
 GENERATION_URL = "https://openrouter.ai/api/v1/generation"
-DEFAULT_MODEL = "google/gemini-3-flash-preview"
+DEFAULT_MODEL = os.environ.get("OPENROUTER_DEFAULT_MODEL", "google/gemini-3-flash-preview")
 
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
 
@@ -47,12 +47,15 @@ def get_api_keys() -> list[str]:
 
     Checks ``OPENROUTER_API_KEYS`` (comma-separated) first, then falls back
     to the single ``OPENROUTER_API_KEY`` variable.
+    When using a local endpoint (OPENROUTER_URL is not openrouter.ai),
+    returns a dummy key since no auth is needed.
 
     Returns:
         List of API key strings.
 
     Raises:
-        EnvironmentError: If neither variable is set or all values are empty.
+        EnvironmentError: If neither variable is set or all values are empty
+            (only when using OpenRouter).
     """
     multi = os.environ.get("OPENROUTER_API_KEYS", "")
     if multi.strip():
@@ -63,6 +66,10 @@ def get_api_keys() -> list[str]:
     single = os.environ.get("OPENROUTER_API_KEY", "").strip()
     if single:
         return [single]
+
+    # Local endpoint: no API key needed
+    if "openrouter.ai" not in OPENROUTER_URL:
+        return ["local-no-key"]
 
     raise EnvironmentError(
         "No OpenRouter API key found. Set OPENROUTER_API_KEYS (comma-separated) "
