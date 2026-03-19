@@ -96,13 +96,13 @@ The Correct↔Incorrect confusion (14% combined) is rare but costs 4× more in Q
 ## What Didn't Work
 
 - **Structured criteria evaluation (C3):** Slower (471s vs 307s) and less accurate. The model "over-reasons" into the middle class.
-- **Parallel ensemble runs:** Rate limiting destroyed data quality. Need sequential execution.
+- **Parallel majority-vote runs:** Rate limiting destroyed data quality. Need sequential execution.
 - **4 examples/label:** Diminishing returns + higher cost + rate limit risk. 3/label is the sweet spot.
 
 ## Next Steps
 
 - [ ] Try stronger model (Claude Sonnet or GPT-4) for ceiling estimate
-- [ ] Clean ensemble: 3 seeds run sequentially, majority vote
+- [ ] Clean multi-seed majority vote: 3 seeds run sequentially, majority vote
 - [ ] Score test set when released (2026-03-21)
 - [ ] Submit best results (deadline 2026-03-28)
 - [ ] Consider fine-tuning open-source model on 7,899 training samples

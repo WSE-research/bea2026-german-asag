@@ -49,7 +49,7 @@ OPENROUTER_MODEL="google/gemini-3-flash-preview" python -m src.strategy_c5a_post
 
 ---
 
-## Task 2: Strategy C5b — Multi-Seed Self-Ensemble
+## Task 2: Strategy C5b — Multi-Seed Majority Vote
 
 **Idea:** Run C4 (n_similar=2, n_boundary=2) three times with different seeds. Majority vote across the three runs.
 
@@ -134,7 +134,7 @@ OPENROUTER_MODEL="google/gemini-3-flash-preview" python -m src.strategy_c5d_deco
 |----------|-----|-----|-----|--------|-------|
 | C4 baseline | 0.744 | 73.2% | 0.734 | 0 | n_similar=2, n_boundary=2 |
 | C5a (postprocess + anti-ex) | 0.543 | 65.0% | 0.646 | 1 | **Failed** — 126 overrides too aggressive |
-| C5b (multi-seed ensemble) | 0.743 | 73.2% | 0.734 | 0 | Pointless — 98.1% unanimous at temp=0.2 |
+| C5b (multi-seed majority vote) | 0.743 | 73.2% | 0.734 | 0 | Pointless — 98.1% unanimous at temp=0.2 |
 | **C5c (adaptive difficulty)** | **0.748** | **73.6%** | **0.738** | **0** | **New best — adaptive n_boundary by question difficulty** |
 | C5d (rubric decomposition) | 0.610* | 64.0% | 0.642 | 0 | **Failed** — only 2 criteria avg, too coarse |
 
@@ -145,8 +145,8 @@ OPENROUTER_MODEL="google/gemini-3-flash-preview" python -m src.strategy_c5d_deco
 ### C5a: Post-processing killed accuracy
 The `len(answer) < 15` rule overrode 126/827 samples (15%). Many legitimate short answers that were Partially correct or Correct got forced to Incorrect. The anti-examples in the prompt may have also made the model more "Incorrect-happy." **Lesson:** Post-processing heuristics on short-answer data are dangerous — German STEM answers can be legitimately short.
 
-### C5b: Multi-seed ensemble is useless at low temperature
-98.1% of samples got unanimous agreement across 3 seeds. Only 16/827 had majority vote, 0 had a split. At temperature=0.2, Gemini Flash is nearly deterministic — the seed only affects which random examples fill gaps in the SmartExampleSelector, and those gaps are rare. **Lesson:** Self-ensemble only works if the model has meaningful output variance.
+### C5b: Multi-seed majority vote is useless at low temperature
+98.1% of samples got unanimous agreement across 3 seeds. Only 16/827 had majority vote, 0 had a split. At temperature=0.2, Gemini Flash is nearly deterministic — the seed only affects which random examples fill gaps in the SmartExampleSelector, and those gaps are rare. **Lesson:** Multi-seed majority vote only works if the model has meaningful output variance.
 
 ### C5c: Adaptive difficulty works
 Easy questions (>60% dominant label, 24/78 questions) benefit from fewer boundary examples (n_boundary=1), achieving 81.5% accuracy vs 70% on medium/hard questions. The improvement is small (+0.004 QWK) but consistent and free. **Lesson:** Over-calibrating easy questions with boundary examples may confuse the model; less is more for obvious cases.

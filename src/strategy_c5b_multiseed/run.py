@@ -1,10 +1,11 @@
 """
-Strategy C5b: Multi-Seed Self-Ensemble
+Strategy C5b: Multi-Seed Majority Vote (Self-Consistency)
 
 Runs C4's scorer 3 times with different random seeds, then majority-votes
-the per-sample predictions.  Because ``configure()`` resets the internal
-SmartExampleSelector, each seed requires a full sequential pass over all
-samples before moving to the next seed.
+the per-sample predictions. This is majority voting across runs of the same
+model with different example selections — NOT learned ensemble aggregation.
+Because ``configure()`` resets the internal SmartExampleSelector, each seed
+requires a full sequential pass over all samples before moving to the next seed.
 
 Usage:
     python -m src.strategy_c5b_multiseed.run [--split trial|train|test] \
@@ -101,10 +102,10 @@ def majority_vote(
 ) -> list[dict]:
     """Majority-vote across seed passes.
 
-    Returns a list of ensemble prediction dicts (one per sample, ordered by
+    Returns a list of voted prediction dicts (one per sample, ordered by
     *sample_ids*) with per-seed detail embedded.
     """
-    ensemble: list[dict] = []
+    voted_results: list[dict] = []
     for sid in sample_ids:
         seed_preds: dict[int, str | None] = {}
         seed_details: dict[str, dict] = {}
@@ -143,7 +144,7 @@ def majority_vote(
 
         # Grab gold from any seed's result
         any_res = per_seed_results[SEEDS[0]].get(sid, {})
-        ensemble.append({
+        voted_results.append({
             "id": sid,
             "question_id": any_res.get("question_id"),
             "predicted_score": voted_score,
@@ -152,7 +153,7 @@ def majority_vote(
             "per_seed": seed_details,
         })
 
-    return ensemble
+    return voted_results
 
 
 def compute_metrics(results: list[dict]) -> dict:
@@ -228,12 +229,12 @@ def compute_metrics(results: list[dict]) -> dict:
     }
 
 
-def compute_agreement_stats(ensemble: list[dict]) -> dict:
-    """Count agreement categories across the ensemble."""
+def compute_agreement_stats(voted_results: list[dict]) -> dict:
+    """Count agreement categories across the multi-seed vote."""
     counts: Counter = Counter()
-    for item in ensemble:
+    for item in voted_results:
         counts[item["agreement"]] += 1
-    total = len(ensemble)
+    total = len(voted_results)
     return {
         "total": total,
         "unanimous": counts.get("unanimous", 0),
@@ -262,7 +263,7 @@ def results_to_list(seed_results: dict[str, dict], sample_ids: list[str]) -> lis
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Strategy C5b: Multi-Seed Self-Ensemble"
+        description="Strategy C5b: Multi-Seed Majority Vote"
     )
     parser.add_argument("--split", choices=["train", "trial", "test"], default="trial")
     parser.add_argument("--workers", type=int, default=5)
@@ -286,7 +287,7 @@ def main():
     )
 
     print("=" * 70)
-    print("  Strategy C5b: Multi-Seed Self-Ensemble")
+    print("  Strategy C5b: Multi-Seed Majority Vote")
     print("=" * 70)
     print(
         f"  Split: {args.split} | Workers: {args.workers} "
@@ -356,33 +357,33 @@ def main():
             print(f"  Seed {seed:>3d}: {m['error']}")
 
     # ------------------------------------------------------------------
-    # Majority-vote ensemble
+    # Majority vote across seeds
     # ------------------------------------------------------------------
-    ensemble = majority_vote(per_seed_results, sample_ids)
-    ensemble_metrics = compute_metrics(ensemble)
-    agreement_stats = compute_agreement_stats(ensemble)
+    voted = majority_vote(per_seed_results, sample_ids)
+    vote_metrics = compute_metrics(voted)
+    agreement_stats = compute_agreement_stats(voted)
 
     print(f"\n{'=' * 70}")
-    print("  Ensemble Results (majority vote)")
+    print("  Majority Vote Results (multi-seed)")
     print("=" * 70)
-    if "error" not in ensemble_metrics:
+    if "error" not in vote_metrics:
         print(
-            f"  QWK: {ensemble_metrics['qwk']:.4f} | "
-            f"Acc: {ensemble_metrics['accuracy']:.4f} | "
-            f"wF1: {ensemble_metrics['weighted_f1']:.4f}"
+            f"  QWK: {vote_metrics['qwk']:.4f} | "
+            f"Acc: {vote_metrics['accuracy']:.4f} | "
+            f"wF1: {vote_metrics['weighted_f1']:.4f}"
         )
         print(
-            f"  Scored: {ensemble_metrics['n_scored']} | "
-            f"Errors: {ensemble_metrics['n_errors']}"
+            f"  Scored: {vote_metrics['n_scored']} | "
+            f"Errors: {vote_metrics['n_errors']}"
         )
         for label in ["Correct", "Partially correct", "Incorrect"]:
-            pc = ensemble_metrics["per_class"][label]
+            pc = vote_metrics["per_class"][label]
             print(
                 f"    {label:>20s}: P={pc['precision']:.3f} "
                 f"R={pc['recall']:.3f} F1={pc['f1']:.3f} (n={pc['support']})"
             )
     else:
-        print(f"  Error: {ensemble_metrics['error']}")
+        print(f"  Error: {vote_metrics['error']}")
 
     print(f"\n  Agreement:")
     print(
@@ -406,14 +407,14 @@ def main():
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
-    # Predictions (ensemble with per-seed detail)
-    pred_path = RESULTS_DIR / f"predictions_{args.split}_ensemble_{timestamp}.json"
+    # Predictions (voted results with per-seed detail)
+    pred_path = RESULTS_DIR / f"predictions_{args.split}_voted_{timestamp}.json"
     with pred_path.open("w", encoding="utf-8") as f:
-        json.dump(ensemble, f, ensure_ascii=False, indent=2)
+        json.dump(voted, f, ensure_ascii=False, indent=2)
 
     # Metrics
     meta = {
-        "strategy": "C5b: Multi-Seed Self-Ensemble",
+        "strategy": "C5b: Multi-Seed Majority Vote",
         "split": args.split,
         "model": get_model(),
         "seeds": SEEDS,
@@ -422,18 +423,18 @@ def main():
         "n_similar": args.n_similar,
         "n_samples": len(data),
         "elapsed_seconds": round(elapsed_total, 2),
-        "ensemble_metrics": ensemble_metrics,
+        "vote_metrics": vote_metrics,
         "per_seed_metrics": per_seed_metrics,
         "agreement": agreement_stats,
     }
-    metrics_path = RESULTS_DIR / f"metrics_{args.split}_ensemble_{timestamp}.json"
+    metrics_path = RESULTS_DIR / f"metrics_{args.split}_voted_{timestamp}.json"
     with metrics_path.open("w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 
     # Submission files
     for track in ("3way", "2way"):
         sub_path = RESULTS_DIR / f"submission_{args.split}_{track}_{timestamp}.json"
-        compile_submission_from_predictions(ensemble, sub_path, track=track)
+        compile_submission_from_predictions(voted, sub_path, track=track)
 
     print(f"\n  Predictions: {pred_path}")
     print(f"  Metrics:     {metrics_path}")

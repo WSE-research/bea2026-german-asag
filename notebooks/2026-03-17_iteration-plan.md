@@ -27,16 +27,16 @@ Replace random per-question example selection with two improvements:
 - Source: [[rag-based-example-selection-significantly-outperforms-random-shots]] (Zhao 2025, p<0.001 significance)
 - Expected gain: +2-4 QWK points
 
-### Lever 2: Cheap Model Ensemble
+### Lever 2: Cheap Model Majority Vote
 
-Instead of one expensive model, run multiple cheap models and ensemble via majority vote or soft voting:
+Instead of one expensive model, run multiple cheap models and aggregate via majority vote or soft voting:
 
 - google/gemini-3-flash-preview (current)
 - meta-llama/llama-4-scout (latest Llama 4)
 - qwen/qwen3-30b-a3b (latest Qwen 3 MoE, very cheap)
 - google/gemma-3-27b-it (latest Gemma 3)
 
-Ensemble via majority vote: 3+ models agree = high confidence. Disagreement = flag for analysis.
+Majority vote: 3+ models agree = high confidence. Disagreement = flag for analysis.
 
 - Source: ICALT paper methodology (cross-model agreement), [[probabilistic-annotation-models-outperform-majority-voting]]
 - Expected gain: +2-5 QWK points from variance reduction
@@ -52,5 +52,5 @@ Ensemble via majority vote: 3+ models agree = high confidence. Disagreement = fl
 ## Success Criteria
 
 - C4 (smart examples) beats C2 (random examples) on full trial set
-- Ensemble of 3+ cheap models beats best single model
+- Majority vote of 3+ cheap models beats best single model
 - Target: QWK ≥ 0.73 on trial set

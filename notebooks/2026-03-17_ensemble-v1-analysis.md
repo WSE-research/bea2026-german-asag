@@ -1,11 +1,11 @@
 ---
 type: experiment-log
 date: 2026-03-17
-tags: [phd, bea26, shared-task, experiment, ensemble]
+tags: [phd, bea26, shared-task, experiment, majority-vote]
 parent: "[[bea26-shared-task]]"
 ---
 
-# Ensemble v1 Analysis — Multi-Model Majority Vote
+# Majority Vote v1 Analysis — Multi-Model Majority Vote
 
 ## Setup
 
@@ -21,11 +21,11 @@ Ran C2 prompt (tuned fewshot, 3 examples/label) across 4 cheap models via OpenRo
 | Gemma 3 27B | 0.540 | 58.5% | 0.576 | 1 | Distant second |
 | Llama 4 Scout | 0.507 | 56.4% | 0.543 | 0 | Weak on German |
 | Qwen3 30B MoE | 0.421 | 53.1% | 0.511 | **109** | Unreliable, 13% failure rate |
-| **ENSEMBLE (vote)** | **0.605** | **63.5%** | **0.631** | 0 | Worse than Gemini alone! |
+| **MAJORITY VOTE** | **0.605** | **63.5%** | **0.631** | 0 | Worse than Gemini alone! |
 
-### Key Finding: The ensemble is WORSE than the best single model
+### Key Finding: The majority vote is WORSE than the best single model
 
-**Ensemble QWK 0.605 < Gemini alone 0.678.** The weaker models drag down the majority vote. When one model dominates this heavily, the two weaker models can outvote the strong model on cases where Gemini was correct.
+**Majority vote QWK 0.605 < Gemini alone 0.678.** The weaker models drag down the majority vote. When one model dominates this heavily, the two weaker models can outvote the strong model on cases where Gemini was correct.
 
 ### Per-Model Error Patterns
 
@@ -49,13 +49,13 @@ Ran C2 prompt (tuned fewshot, 3 examples/label) across 4 cheap models via OpenRo
 
 ## Conclusions
 
-1. **Ensemble only works when member models are comparable in quality.** With a 0.17+ QWK gap between the best and second-best model, majority vote hurts rather than helps.
+1. **Majority vote only works when member models are comparable in quality.** With a 0.17+ QWK gap between the best and second-best model, majority vote hurts rather than helps.
 
 2. **Gemini 3 Flash is significantly better at German ASAG** than Llama 4 Scout, Qwen3, and Gemma 3. This may reflect Gemini's stronger multilingual training.
 
-3. ~~**The next ensemble (v2) should use frontier-class models**~~ — **UPDATE (2026-03-18):** Tested DeepSeek V3.2, MiniMax M2.5, Kimi K2.5. All failed to match Gemini Flash. See `2026-03-18_model-screening.md`.
+3. ~~**The next majority vote (v2) should use frontier-class models**~~ — **UPDATE (2026-03-18):** Tested DeepSeek V3.2, MiniMax M2.5, Kimi K2.5. All failed to match Gemini Flash. See `2026-03-18_model-screening.md`.
 
-4. **C4 (smart examples) with Gemini Flash alone (QWK 0.735) remains our best result** — better than any ensemble configuration tried so far.
+4. **C4 (smart examples) with Gemini Flash alone (QWK 0.735) remains our best result** — better than any majority vote configuration tried so far.
 
 ## Comparison with All Strategies
 
@@ -63,8 +63,8 @@ Ran C2 prompt (tuned fewshot, 3 examples/label) across 4 cheap models via OpenRo
 |----------|-----|-------|
 | **C4 (smart examples, Gemini Flash)** | **0.735** | **Current champion** |
 | C2 (tuned, 3ex, Gemini Flash) | 0.709 | Previous best |
-| C2 (Gemini Flash in ensemble context) | 0.678 | Lower than standalone C2 (random examples, not smart) |
-| Ensemble v1 (4 models, majority vote) | 0.605 | Weak models drag down the vote |
+| C2 (Gemini Flash in majority-vote context) | 0.678 | Lower than standalone C2 (random examples, not smart) |
+| Majority vote v1 (4 models) | 0.605 | Weak models drag down the vote |
 | Gemma 3 alone | 0.540 | |
 | Llama 4 Scout alone | 0.507 | |
 | Qwen3 30B alone | 0.421 | |

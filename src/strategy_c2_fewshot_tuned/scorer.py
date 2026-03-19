@@ -70,7 +70,7 @@ def _ensure_examples_loaded():
 def get_examples_for_sample(sample: dict) -> list[dict]:
     """Return few-shot examples for a sample, excluding the sample itself.
 
-    Public API for use by ensemble and other strategies that reuse C2 examples.
+    Public API for use by majority-vote and other strategies that reuse C2 examples.
     """
     _ensure_examples_loaded()
     all_examples = _question_examples.get(sample["question_id"], [])

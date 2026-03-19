@@ -4,6 +4,9 @@ OpenRouter API client with key rotation and retry logic.
 Provides a reliable interface to the OpenRouter chat completions API
 with thread-safe round-robin key selection, JSON mode support, and
 exponential backoff with jitter on transient failures.
+
+Extended (2026-03-19): Returns full metadata (token counts, cost,
+generation ID, model, latency) via ``call_openrouter_full``.
 """
 
 import json
@@ -29,6 +32,7 @@ _RR_LOCK = threading.Lock()
 _RR_INDEX = 0
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+GENERATION_URL = "https://openrouter.ai/api/v1/generation"
 DEFAULT_MODEL = "google/gemini-3-flash-preview"
 
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
@@ -88,16 +92,123 @@ def _next_key(keys: list[str]) -> str:
 
 
 def _parse_json_response(text: str) -> dict:
-    """Parse JSON from an LLM response, stripping markdown fences if present."""
+    """Parse JSON from an LLM response.
+
+    Handles multiple formats:
+    1. Pure JSON: ``{"score": "Correct", ...}``
+    2. Markdown-fenced: ``\\`\\`\\`json\\n{...}\\n\\`\\`\\```
+    3. Text + JSON: reasoning text followed by a JSON object
+    """
     cleaned = text.strip()
+
+    # Try 1: direct parse
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        pass
+
+    # Try 2: strip markdown fences
     if cleaned.startswith("```"):
-        # Strip opening fence (```json or ```)
-        first_newline = cleaned.index("\n")
-        cleaned = cleaned[first_newline + 1:]
-        if cleaned.endswith("```"):
-            cleaned = cleaned[:-3]
-        cleaned = cleaned.strip()
-    return json.loads(cleaned)
+        try:
+            first_newline = cleaned.index("\n")
+            inner = cleaned[first_newline + 1:]
+            if inner.endswith("```"):
+                inner = inner[:-3]
+            return json.loads(inner.strip())
+        except (json.JSONDecodeError, ValueError):
+            pass
+
+    # Try 3: find last JSON object in the text (handles reasoning + JSON)
+    # Search for the last '{' that starts a valid JSON object
+    last_brace = cleaned.rfind("{")
+    while last_brace >= 0:
+        try:
+            candidate = cleaned[last_brace:]
+            return json.loads(candidate)
+        except json.JSONDecodeError:
+            last_brace = cleaned.rfind("{", 0, last_brace)
+
+    # Nothing worked — raise with original text for debugging
+    raise json.JSONDecodeError(
+        f"No valid JSON found in response ({len(text)} chars): {text[:200]}",
+        text, 0
+    )
+
+
+# ---------------------------------------------------------------------------
+# Metadata extraction
+# ---------------------------------------------------------------------------
+
+def _extract_metadata(body: dict) -> dict:
+    """Extract all available metadata from an OpenRouter chat completion response.
+
+    Captures token counts, cost, model info, and generation ID for later
+    retrieval of detailed stats via ``fetch_generation_stats``.
+    """
+    usage = body.get("usage", {})
+    meta = {
+        "generation_id": body.get("id"),
+        "model": body.get("model"),
+        "created": body.get("created"),
+        "system_fingerprint": body.get("system_fingerprint"),
+        # Token counts (inline)
+        "prompt_tokens": usage.get("prompt_tokens"),
+        "completion_tokens": usage.get("completion_tokens"),
+        "total_tokens": usage.get("total_tokens"),
+        # Cost (if provided inline)
+        "cost": usage.get("cost"),
+    }
+
+    # Detailed token breakdowns (if available)
+    prompt_details = usage.get("prompt_tokens_details") or {}
+    completion_details = usage.get("completion_tokens_details") or {}
+    if prompt_details:
+        meta["cached_tokens"] = prompt_details.get("cached_tokens")
+    if completion_details:
+        meta["reasoning_tokens"] = completion_details.get("reasoning_tokens")
+
+    return meta
+
+
+def fetch_generation_stats(generation_id: str, timeout: float = 10.0) -> dict | None:
+    """Fetch detailed generation stats from OpenRouter's /api/v1/generation endpoint.
+
+    Returns metadata including total_cost, latency, provider_name, native token
+    counts, and more. Returns None on failure (non-critical — stats are a bonus).
+    """
+    if not generation_id:
+        return None
+
+    keys = get_api_keys()
+    api_key = keys[0]  # Any key works for reading stats
+
+    try:
+        with httpx.Client(timeout=timeout) as client:
+            resp = client.get(
+                GENERATION_URL,
+                params={"id": generation_id},
+                headers={"Authorization": f"Bearer {api_key}"},
+            )
+            resp.raise_for_status()
+
+        data = resp.json().get("data", {})
+        return {
+            "total_cost": data.get("total_cost"),
+            "provider_name": data.get("provider_name"),
+            "latency_ms": data.get("latency"),
+            "generation_time_ms": data.get("generation_time"),
+            "tokens_prompt": data.get("tokens_prompt"),
+            "tokens_completion": data.get("tokens_completion"),
+            "native_tokens_prompt": data.get("native_tokens_prompt"),
+            "native_tokens_completion": data.get("native_tokens_completion"),
+            "native_tokens_reasoning": data.get("native_tokens_reasoning"),
+            "native_tokens_cached": data.get("native_tokens_cached"),
+            "finish_reason": data.get("finish_reason"),
+            "cache_discount": data.get("cache_discount"),
+        }
+    except Exception as exc:
+        logger.debug("Failed to fetch generation stats for %s: %s", generation_id, exc)
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -176,7 +287,15 @@ def call_openrouter(
 
     logger.debug("OpenRouter response length: %d chars", len(content))
 
-    return _parse_json_response(content)
+    parsed = _parse_json_response(content)
+
+    # Extract inline metadata from the response body
+    metadata = _extract_metadata(body)
+
+    # Store metadata on the parsed dict under a reserved key
+    parsed["_metadata"] = metadata
+
+    return parsed
 
 
 # ---------------------------------------------------------------------------

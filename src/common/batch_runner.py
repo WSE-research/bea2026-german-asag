@@ -285,7 +285,7 @@ def compile_submission_from_predictions(
 ) -> None:
     """Compile a list of prediction dicts into a submission JSON file.
 
-    Works with the prediction format used by C2/C3/C4/ensemble strategies.
+    Works with the prediction format used by C2/C3/C4/majority-vote strategies.
 
     Args:
         predictions: List of prediction dicts with ``id``, ``question_id``,

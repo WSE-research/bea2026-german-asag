@@ -1,5 +1,7 @@
 """
-Score a single sample across multiple models and combine via majority vote.
+Multi-model majority vote: score a sample with multiple models, pick the
+plurality winner. This is simple majority voting, NOT ensemble learning
+(no learned aggregation weights).
 
 Uses the C2 (tuned fewshot) prompt strategy but swaps the model for each call.
 """
@@ -14,7 +16,7 @@ from src.strategy_c2_fewshot_tuned.scorer import (
 
 logger = logging.getLogger(__name__)
 
-# Default ensemble models — all cheap, all latest versions
+# Default models for majority vote — all cheap, all latest versions
 DEFAULT_MODELS = [
     "google/gemini-3-flash-preview",
     "meta-llama/llama-4-scout",
@@ -23,7 +25,7 @@ DEFAULT_MODELS = [
 ]
 
 def configure(models: list[str] | None = None, examples_per_label: int = 3, seed: int = 42):
-    """Configure ensemble models and example selection."""
+    """Configure majority-vote models and example selection."""
     global _models
     _models = models or DEFAULT_MODELS
     c2_configure(examples_per_label=examples_per_label, seed=seed)
@@ -47,9 +49,9 @@ def score_sample_single_model(sample: dict, model: str, examples: list[dict]) ->
         logger.warning("Model %s failed on %s: %s", model, sample["id"], e)
         return {"model": model, "score": None, "confidence": None, "error": str(e)}
 
-def score_sample_ensemble(sample: dict) -> dict:
+def score_sample_majority_vote(sample: dict) -> dict:
     """
-    Score a sample across all ensemble models. Returns majority-voted prediction.
+    Score a sample across all models. Returns majority-voted prediction.
 
     Returns dict with:
     - "score": majority-voted label
