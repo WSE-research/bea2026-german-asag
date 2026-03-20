@@ -1,0 +1,10 @@
+{
+  "variant": "finetune_v2_trial",
+  "model": "/home/jgwozdz/bea26/bea2026-german-asag/models/qwen25-7b-merged",
+  "qwk": 0.7741844560628653,
+  "accuracy": 0.7593712212817413,
+  "errors": 0,
+  "scored": 827,
+  "total": 827,
+  "elapsed_s": 184.4
+}
