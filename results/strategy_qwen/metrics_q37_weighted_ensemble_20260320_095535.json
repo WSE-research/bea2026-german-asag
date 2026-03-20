@@ -1,0 +1,27 @@
+{
+  "qwk": 0.7225,
+  "accuracy": 0.706,
+  "per_class": {
+    "Correct": {
+      "P": 0.742,
+      "R": 0.708,
+      "F1": 0.725
+    },
+    "Partially correct": {
+      "P": 0.601,
+      "R": 0.675,
+      "F1": 0.635
+    },
+    "Incorrect": {
+      "P": 0.808,
+      "R": 0.737,
+      "F1": 0.771
+    }
+  },
+  "variant": "q37_weighted_ensemble",
+  "scored": 813,
+  "model": "kNN+Q26_weighted",
+  "agree": 477,
+  "knn_wins": 40,
+  "llm_wins": 296
+}
