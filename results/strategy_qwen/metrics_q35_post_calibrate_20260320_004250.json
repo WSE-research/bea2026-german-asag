@@ -1,0 +1,46 @@
+{
+  "qwk": 0.6826,
+  "accuracy": 0.7073,
+  "per_class": {
+    "Correct": {
+      "P": 0.731,
+      "R": 0.737,
+      "F1": 0.734,
+      "support": 236
+    },
+    "Partially correct": {
+      "P": 0.657,
+      "R": 0.616,
+      "F1": 0.636,
+      "support": 292
+    },
+    "Incorrect": {
+      "P": 0.734,
+      "R": 0.775,
+      "F1": 0.754,
+      "support": 285
+    }
+  },
+  "confusion": {
+    "Correct": {
+      "Correct": 174,
+      "Partially correct": 43,
+      "Incorrect": 19
+    },
+    "Partially correct": {
+      "Correct": 51,
+      "Partially correct": 180,
+      "Incorrect": 61
+    },
+    "Incorrect": {
+      "Correct": 13,
+      "Partially correct": 51,
+      "Incorrect": 221
+    }
+  },
+  "variant": "q35_post_calibrate",
+  "model": "Qwen/Qwen3.5-27B-FP8",
+  "reclassified": 75,
+  "scored": 813,
+  "errors": 0
+}
