@@ -1,0 +1,10 @@
+{
+  "variant": "finetune_trainonly_trial",
+  "model": "/home/jgwozdz/bea26/bea2026-german-asag/models/qwen25-7b-trainonly-merged",
+  "qwk": null,
+  "accuracy": null,
+  "errors": 827,
+  "scored": 0,
+  "total": 827,
+  "elapsed_s": 41.4
+}
