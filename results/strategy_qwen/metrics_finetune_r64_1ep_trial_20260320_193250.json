@@ -1,0 +1,10 @@
+{
+  "variant": "finetune_r64_1ep_trial",
+  "model": "finetuned-r64-1ep",
+  "qwk": 0.676233147138372,
+  "accuracy": 0.6771463119709794,
+  "errors": 0,
+  "scored": 827,
+  "total": 827,
+  "elapsed_s": 185.1
+}

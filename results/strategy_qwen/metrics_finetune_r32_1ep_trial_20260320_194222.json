@@ -1,0 +1,10 @@
+{
+  "variant": "finetune_r32_1ep_trial",
+  "model": "finetuned-r32-1ep",
+  "qwk": 0.6715941309135559,
+  "accuracy": 0.6735187424425635,
+  "errors": 0,
+  "scored": 827,
+  "total": 827,
+  "elapsed_s": 184.7
+}
