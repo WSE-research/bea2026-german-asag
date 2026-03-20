@@ -1,0 +1,10 @@
+{
+  "variant": "finetune_trainonly_trial",
+  "model": "finetuned",
+  "qwk": 0.7257286930199385,
+  "accuracy": 0.7085852478839177,
+  "errors": 0,
+  "scored": 827,
+  "total": 827,
+  "elapsed_s": 185.0
+}
