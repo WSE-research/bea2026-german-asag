@@ -1,0 +1,10 @@
+{
+  "variant": "finetune_14b_alldata_trial",
+  "model": "finetuned",
+  "qwk": 0.8276463838879817,
+  "accuracy": 0.8089480048367593,
+  "errors": 0,
+  "scored": 827,
+  "total": 827,
+  "elapsed_s": 303.7
+}
