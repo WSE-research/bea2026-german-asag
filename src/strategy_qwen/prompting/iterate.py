@@ -9,8 +9,8 @@ import json
 import sys
 from pathlib import Path
 
-from src.strategy_qwen.runner import load_data, run_variant, RESULTS_DIR
-from src.strategy_qwen.prompts import VARIANTS
+from src.strategy_qwen.prompting.runner import load_data, run_variant, RESULTS_DIR
+from src.strategy_qwen.prompting.prompts import VARIANTS
 
 
 def main():

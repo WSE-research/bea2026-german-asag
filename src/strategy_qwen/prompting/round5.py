@@ -7,11 +7,11 @@ Then try Q29: Q26 + self-consistency.
 import json
 import time
 from collections import Counter
-from src.strategy_qwen.runner import (
+from src.strategy_qwen.prompting.runner import (
     load_data, run_variant, call_model, parse_score,
     LABELS, RESULTS_DIR, compute_metrics, MODEL
 )
-from src.strategy_qwen.round4 import q26_best_of_breed, q27_adaptive, ROUND4_VARIANTS
+from src.strategy_qwen.prompting.round4 import q26_best_of_breed, q27_adaptive, ROUND4_VARIANTS
 
 
 def run_selfconsistency_variant(variant_name, build_fn, trial, train, limit, n_votes=3):

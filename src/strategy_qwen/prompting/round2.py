@@ -23,7 +23,7 @@ from pathlib import Path
 from collections import defaultdict
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from src.strategy_qwen.runner import load_data, run_variant, call_model, parse_score, LABELS, RESULTS_DIR
+from src.strategy_qwen.prompting.runner import load_data, run_variant, call_model, parse_score, LABELS, RESULTS_DIR
 
 # Cache for examples
 _examples_cache = {}
@@ -355,7 +355,7 @@ def run_q13(trial, train, limit=100):
             raw_results.append({"id": sample["id"], "error": str(e)})
 
     elapsed = time.time() - start
-    from src.strategy_qwen.runner import compute_metrics, MODEL
+    from src.strategy_qwen.prompting.runner import compute_metrics, MODEL
     metrics = compute_metrics(golds, preds)
     metrics.update({"errors": errors, "total": len(samples), "scored": len(golds),
                     "elapsed_s": round(elapsed, 1), "samples_per_s": round(len(samples)/elapsed, 2),

@@ -6,11 +6,11 @@ Also try Q29 self-consistency at temp=0.3 (diverse votes).
 import json
 import time
 from collections import Counter
-from src.strategy_qwen.runner import (
+from src.strategy_qwen.prompting.runner import (
     load_data, call_model, parse_score,
     LABELS, RESULTS_DIR, compute_metrics, MODEL
 )
-from src.strategy_qwen.round4 import q26_best_of_breed
+from src.strategy_qwen.prompting.round4 import q26_best_of_breed
 
 
 def run_q26_temp(trial, train, limit=827, temperature=0.1):
