@@ -1,0 +1,9 @@
+{
+  "variant": "finetune_32b_alldata_trial",
+  "qwk": 0.8436,
+  "accuracy": 0.8259,
+  "errors": 0,
+  "scored": 827,
+  "total": 827,
+  "elapsed_s": 787.1
+}
