@@ -6,11 +6,11 @@ And Q31: Q26 with temperature sweep to find optimal temp.
 import json
 import time
 from pathlib import Path
-from src.strategy_qwen.runner import (
+from src.strategy_qwen.prompting.runner import (
     load_data, call_model, parse_score,
     LABELS, LABEL_MAP, RESULTS_DIR, compute_metrics, MODEL
 )
-from src.strategy_qwen.round4 import q26_best_of_breed
+from src.strategy_qwen.prompting.round4 import q26_best_of_breed
 import httpx
 
 

@@ -19,7 +19,7 @@ from collections import defaultdict, Counter
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics import cohen_kappa_score
-from src.strategy_qwen.runner import (
+from src.strategy_qwen.prompting.runner import (
     load_data, run_variant, call_model, parse_score,
     LABELS, LABEL_MAP, RESULTS_DIR, compute_metrics, MODEL
 )
@@ -74,7 +74,7 @@ def _get_difficulty(question_id, train):
 # ============================================================
 def run_q23_selfconsistency(trial, train, limit=100):
     """Run Q12 three times at temp=0.5, take majority vote."""
-    from src.strategy_qwen.round3 import make_q12_variant
+    from src.strategy_qwen.prompting.round3 import make_q12_variant
     build_fn = make_q12_variant(2, 0)
     samples = trial[:limit]
     golds, preds = [], []
@@ -243,7 +243,7 @@ def q27_adaptive(sample, train):
 # ============================================================
 def run_q28_hybrid(trial, train, limit=100, k=7, confidence_threshold=0.6):
     """kNN with confidence. If confident → use kNN, else → use LLM."""
-    from src.strategy_qwen.round3 import make_q12_variant
+    from src.strategy_qwen.prompting.round3 import make_q12_variant
     build_fn = make_q12_variant(2, 0)
     samples = trial[:limit]
     golds, preds = [], []

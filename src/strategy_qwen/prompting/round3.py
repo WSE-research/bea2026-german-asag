@@ -16,7 +16,7 @@ from pathlib import Path
 from collections import defaultdict
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from src.strategy_qwen.runner import load_data, run_variant, call_model, parse_score, LABELS, RESULTS_DIR, compute_metrics, MODEL
+from src.strategy_qwen.prompting.runner import load_data, run_variant, call_model, parse_score, LABELS, RESULTS_DIR, compute_metrics, MODEL
 
 _tfidf_cache = {}
 _examples_cache = {}

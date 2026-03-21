@@ -14,11 +14,11 @@ import numpy as np
 from collections import Counter, defaultdict
 from pathlib import Path
 from sklearn.metrics import cohen_kappa_score
-from src.strategy_qwen.runner import (
+from src.strategy_qwen.prompting.runner import (
     load_data, call_model, parse_score,
     LABELS, LABEL_MAP, RESULTS_DIR, compute_metrics, MODEL
 )
-from src.strategy_qwen.round4 import q26_best_of_breed
+from src.strategy_qwen.prompting.round4 import q26_best_of_breed
 
 
 def _get_train_label_dist(train):
@@ -45,7 +45,7 @@ def run_q34_confidence(trial, train, limit=827):
     for i, sample in enumerate(samples):
         try:
             # Modified Q26 that asks for confidence
-            from src.strategy_qwen.round4 import _get_smart_examples, _get_difficulty
+            from src.strategy_qwen.prompting.round4 import _get_smart_examples, _get_difficulty
             tier, _ = _get_difficulty(sample["question_id"], train)
             n_sim = {"easy": 1, "medium": 2, "hard": 3}[tier]
 
