@@ -45,3 +45,4 @@ wandb/
 
 # Claude Code
 .claude/
+unsloth_compiled_cache/
