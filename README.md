@@ -6,6 +6,16 @@ on the ALICE-LP-1.0 dataset.
 
 **Authors:** Jonas Gwozdz, Andreas Both — HTWK Leipzig / WSE Research
 
+## Results Overview
+
+![Method Comparison](docs/results_comparison.png)
+
+![Fine-Tuning Scaling Curve](docs/scaling_curve.png)
+
+## Pipeline Architecture
+
+![Pipeline Schematic](docs/pipeline_schematic.png)
+
 ## Best Results (827 trial samples)
 
 | System | QWK | Acc | Method |
