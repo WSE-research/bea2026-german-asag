@@ -1,0 +1,10 @@
+{
+  "variant": "finetune_qwen35_9b_trial",
+  "qwk": 0.7561,
+  "accuracy": 0.7424,
+  "errors": 0,
+  "scored": 827,
+  "total": 827,
+  "elapsed_s": 652.0,
+  "model": "Qwen3.5-9B-LoRA"
+}
