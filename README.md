@@ -32,6 +32,7 @@ on the ALICE-LP-1.0 dataset.
 | Qwen2.5-32B LoRA (train-only) | 0.769 | 75.7% | Unbiased out-of-sample | — |
 | Qwen2.5-14B LoRA (train-only) | 0.753 | 74.1% | Unbiased out-of-sample | — |
 | Gemini 3 Flash (C5c prompt) | 0.748 | 73.6% | Commercial API baseline | — |
+| Qwen3.5-9B LoRA (train-only) | 0.756 | 74.2% | 9B beats 14B (newer gen!) | — |
 | Qwen2.5-7B QLoRA (train-only) | 0.726 | 70.9% | Unbiased out-of-sample | — |
 | Qwen3.5-27B (Q26 prompt) | 0.721 | 70.2% | Best prompt-only, open-source | — |
 | TF-IDF kNN (k=7) | 0.612 | 64.5% | No LLM needed | — |
@@ -54,8 +55,9 @@ Scored 5,094 test samples (2,008 unseen answers + 3,086 unseen questions) with t
 |-------|---------------------|---------------------|----------------------|----------------------|
 | 32B LoRA | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
 | 14B LoRA | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
+| Gemini C5c | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
 
-0 errors across all submissions. Results on [CodaBench](https://www.codabench.org/competitions/14622/) after April 3.
+0 errors across all submissions (12 files: 3 models × 4 tracks, all validated). Results on [CodaBench](https://www.codabench.org/competitions/14622/) after April 3.
 
 ## Repository Structure
 
