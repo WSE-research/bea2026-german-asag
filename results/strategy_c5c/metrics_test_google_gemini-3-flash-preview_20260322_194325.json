@@ -1,0 +1,31 @@
+{
+  "strategy": "C5c: Adaptive Difficulty",
+  "split": "test",
+  "model": "google/gemini-3-flash-preview",
+  "offset": 0,
+  "seed": 42,
+  "tier_config": {
+    "easy": {
+      "n_boundary": 1,
+      "n_similar": 2
+    },
+    "medium": {
+      "n_boundary": 2,
+      "n_similar": 2
+    },
+    "hard": {
+      "n_boundary": 3,
+      "n_similar": 2
+    }
+  },
+  "difficulty_distribution": {
+    "medium": 47,
+    "easy": 24,
+    "hard": 7
+  },
+  "n_samples": 2008,
+  "elapsed_seconds": 562.6,
+  "metrics": {
+    "error": "No valid predictions"
+  }
+}
