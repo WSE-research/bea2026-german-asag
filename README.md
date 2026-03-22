@@ -38,6 +38,14 @@ on the ALICE-LP-1.0 dataset.
 
 *in-sample (trial included in training data, as allowed by task rules)
 
+> **Understanding our evaluation numbers:** The test set has no labels — results are published April 3. To estimate performance, we evaluated two ways on the 827-sample trial set:
+>
+> - **Out-of-sample (unbiased):** Model trained on 7,072 training samples only, then scored on the 827 trial samples it has *never seen*. This is the honest estimate of real test performance. Our best: **32B at QWK 0.769**.
+> - **In-sample (optimistic):** Model trained on *all* 7,899 samples (training + trial), then scored on the same trial samples it was trained on. This inflates the score due to memorization. Our best: **32B at QWK 0.844**.
+>
+> The task rules allow training on trial data for submissions, so our submitted models use all 7,899 samples for maximum performance. The real test QWK will likely fall between the out-of-sample (0.769) and in-sample (0.844) estimates.
+
+
 ## Test Submissions
 
 Scored 5,094 test samples (2,008 unseen answers + 3,086 unseen questions) with two models:
