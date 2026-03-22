@@ -14,6 +14,10 @@ on the ALICE-LP-1.0 dataset.
 
 ![Fine-Tuning Scaling Curve](docs/scaling_curve.png)
 
+## Submission Results
+
+![Submission Results](docs/submission_results.png)
+
 ## Pipeline Architecture
 
 ![Pipeline Schematic](docs/pipeline_schematic.png)
