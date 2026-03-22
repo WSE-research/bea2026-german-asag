@@ -1,0 +1,10 @@
+{
+  "variant": "test_14b_unseen_answers",
+  "model": "finetuned",
+  "qwk": null,
+  "accuracy": null,
+  "errors": 0,
+  "scored": 2008,
+  "total": 2008,
+  "elapsed_s": 732.6
+}
