@@ -49,6 +49,18 @@ on the ALICE-LP-1.0 dataset.
 
 ## Test Submissions
 
+The shared task defines four evaluation tracks combining two dimensions:
+
+| | 3-way scoring | 2-way scoring |
+|---|---|---|
+| **Seen questions** (2,008 samples) | Track 1 | Track 2 |
+| **Unseen questions** (3,086 samples) | Track 3 | Track 4 |
+
+- **3-way** (Tracks 1 & 3): Predict *Correct*, *Partially correct*, or *Incorrect*
+- **2-way** (Tracks 2 & 4): Binary classification — *Correct* vs *Incorrect* (Partially correct is merged into Incorrect)
+- **Seen questions**: New answers to questions the model saw during training
+- **Unseen questions**: Answers to 39 entirely new questions with new rubrics — the hardest track
+
 Scored 5,094 test samples (2,008 unseen answers + 3,086 unseen questions) with two models:
 
 | Model | Track 1 (3-way seen) | Track 2 (2-way seen) | Track 3 (3-way unseen) | Track 4 (2-way unseen) |
