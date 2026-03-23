@@ -6,7 +6,7 @@ on the ALICE-LP-1.0 dataset.
 
 **Authors:** Jonas Gwozdz, Andreas Both — HTWK Leipzig / WSE Research
 
-**Status:** Test data scored and submitted to CodaBench (all 4 tracks). Leaderboards on April 3.
+**Status:** 16 submissions ready (4 models x 4 tracks). Leaderboards on April 3.
 
 ## Results Overview
 
@@ -56,8 +56,9 @@ Scored 5,094 test samples (2,008 unseen answers + 3,086 unseen questions) with t
 | 32B LoRA | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
 | 14B LoRA | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
 | Gemini C5c | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
+| Stacking Ensemble | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
 
-0 errors across all submissions (12 files: 3 models × 4 tracks, all validated). Results on [CodaBench](https://www.codabench.org/competitions/14622/) after April 3.
+0 errors across all submissions (16 files: 4 models × 4 tracks, all validated). Results on [CodaBench](https://www.codabench.org/competitions/14622/) after April 3.
 
 ## Repository Structure
 
