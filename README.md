@@ -6,7 +6,7 @@ on the ALICE-LP-1.0 dataset.
 
 **Authors:** Jonas Gwozdz, Andreas Both — HTWK Leipzig / WSE Research
 
-**Status:** 16 submissions ready (4 models x 4 tracks). Leaderboards on April 3.
+**Status:** Final official leaderboard published 2026-04-07. **WSE Research placed #2 on three tracks (T1 3-way seen 0.790, T2 2-way seen 0.717, T3 3-way unseen 0.672) and #3 on Track 4 (2-way unseen 0.533).** Paper submission due 2026-04-24.
 
 ## Results Overview
 
@@ -22,20 +22,23 @@ on the ALICE-LP-1.0 dataset.
 
 ![Pipeline Schematic](docs/pipeline_schematic.png)
 
-## Best Results (827 trial samples)
+## Best Results (827 trial samples, unbiased unless marked)
 
-| System | QWK | Acc | Method | Submitted? |
-|--------|-----|-----|--------|------------|
-| Qwen2.5-32B LoRA (all data) | 0.844* | 82.6% | bf16 LoRA, r=32, 3 epochs | Yes (all 4 tracks) |
-| Qwen2.5-14B LoRA (all data) | 0.828* | 80.9% | bf16 LoRA, r=32, 3 epochs | Yes (all 4 tracks) |
-| Stacking ensemble (5 models) | 0.776 | 75.5% | LogReg over 3 FT + Q26 + kNN | — |
-| Qwen2.5-32B LoRA (train-only) | 0.769 | 75.7% | Unbiased out-of-sample | — |
-| Qwen2.5-14B LoRA (train-only) | 0.753 | 74.1% | Unbiased out-of-sample | — |
-| Gemini 3 Flash (C5c prompt) | 0.748 | 73.6% | Commercial API baseline | — |
-| Qwen3.5-9B LoRA (train-only) | 0.756 | 74.2% | 9B beats 14B (newer gen!) | — |
-| Qwen2.5-7B QLoRA (train-only) | 0.726 | 70.9% | Unbiased out-of-sample | — |
-| Qwen3.5-27B (Q26 prompt) | 0.721 | 70.2% | Best prompt-only, open-source | — |
-| TF-IDF kNN (k=7) | 0.612 | 64.5% | No LLM needed | — |
+| System | QWK | Acc | Method |
+|--------|-----|-----|--------|
+| Qwen2.5-72B QLoRA (all data)  | 0.851* | 83.4% | NF4 QLoRA, r=32, 3 epochs (in-sample) |
+| Qwen2.5-32B LoRA (all data)   | 0.844* | 82.6% | bf16 LoRA, r=32, 3 epochs (in-sample) |
+| Qwen2.5-14B LoRA (all data)   | 0.828* | 80.9% | bf16 LoRA, r=32, 3 epochs (in-sample) |
+| Weighted vote (7B+14B+32B+Gemini) | 0.781 | —    | QWK-proportional majority (3-way), LOO-CV |
+| LogReg stacking (5-cand pool) | 0.776 | 75.5% | Meta-learner over FT/prompt/kNN (superseded) |
+| Qwen2.5-32B LoRA              | 0.769 | 75.7% | Train-only unbiased |
+| Qwen2.5-72B QLoRA             | 0.768 | 75.7% | Train-only unbiased (scaling plateau) |
+| Qwen3.5-9B LoRA               | 0.756 | 74.2% | Train-only unbiased |
+| Qwen2.5-14B LoRA              | 0.753 | 74.1% | Train-only unbiased |
+| Gemini 3 Flash (C5c prompt)   | 0.748 | 73.6% | Commercial API baseline |
+| Qwen2.5-7B QLoRA              | 0.726 | 70.9% | Train-only unbiased |
+| Qwen3.5-27B (Q26 prompt)      | 0.719 | 70.2% | Best prompt-only, open-source |
+| TF-IDF kNN (k=7)              | 0.612 | 64.5% | No LLM needed |
 
 *in-sample (trial included in training data, as allowed by task rules)
 
@@ -47,7 +50,7 @@ on the ALICE-LP-1.0 dataset.
 > The task rules allow training on trial data for submissions, so our submitted models use all 7,899 samples for maximum performance. The real test QWK will likely fall between the out-of-sample (0.769) and in-sample (0.844) estimates.
 
 
-## Test Submissions
+## Winning Submission per Track (official, 2026-04-07)
 
 The shared task defines four evaluation tracks combining two dimensions:
 
@@ -61,16 +64,19 @@ The shared task defines four evaluation tracks combining two dimensions:
 - **Seen questions**: New answers to questions the model saw during training
 - **Unseen questions**: Answers to 39 entirely new questions with new rubrics — the hardest track
 
-Scored 5,094 test samples (2,008 unseen answers + 3,086 unseen questions) with two models:
+| Track | QWK | Rank | Submitted system |
+|-------|-----|------|------------------|
+| T1 — 3-way seen questions   | 0.790 | **#2** | QWK-weighted majority vote over {Qwen2.5-7B, 14B, 32B, Gemini 3 Flash} |
+| T2 — 2-way seen questions   | 0.717 | **#2** | Direct binary majority vote over {Qwen2.5-14B, 32B, Gemini 3 Flash} |
+| T3 — 3-way unseen questions | 0.672 | **#2** | Qwen2.5-72B QLoRA solo |
+| T4 — 2-way unseen questions | 0.533 | **#3** | Qwen2.5-72B QLoRA solo |
 
-| Model | Track 1 (3-way seen) | Track 2 (2-way seen) | Track 3 (3-way unseen) | Track 4 (2-way unseen) |
-|-------|---------------------|---------------------|----------------------|----------------------|
-| 32B LoRA | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
-| 14B LoRA | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
-| Gemini C5c | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
-| Stacking Ensemble | 2,008 ✅ | 2,008 ✅ | 3,086 ✅ | 3,086 ✅ |
-
-0 errors across all submissions (16 files: 4 models × 4 tracks, all validated). Results on [CodaBench](https://www.codabench.org/competitions/14622/) after April 3.
+Ensemble composition and voting strategy were selected by exhaustive LOO-CV
+search over all subsets of six candidate scorers (5 fine-tuned Qwen models at
+7B/14B/32B/72B/Qwen3.5-9B + prompt-only Gemini C5c + prompt-only Qwen3.5-27B
+Q26 + TF-IDF kNN k=7) on the 827-sample trial set. Trained meta-learners
+(LogReg, Ridge, GBM, XGBoost) underperformed QWK-weighted voting at this
+dataset size. Results on [CodaBench](https://www.codabench.org/competitions/14622/).
 
 ## Repository Structure
 
@@ -102,20 +108,34 @@ Key finding: **prompt-model coupling is checkpoint-specific** — prompts don't 
 
 ### Track 2: Fine-Tuning
 
-LoRA fine-tuning of Qwen2.5 models (7B → 14B → 32B):
+LoRA fine-tuning of Qwen2.5 models (7B / 14B / 32B / 72B) + Qwen3.5-9B:
 - Both 14B (0.753) and 32B (0.769) **beat Gemini Flash** on unbiased out-of-sample evaluation
-- Diminishing returns: 7B→14B (+0.027), 14B→32B (+0.016)
-- 72B blocked by VRAM limits (needs H200 80GB)
+- Diminishing returns on scaling: 7B→14B (+0.027), 14B→32B (+0.016), 32B→72B (−0.001 on trial, +0.061 on unseen-questions test track)
+- Qwen3.5-9B (0.756) outperforms Qwen2.5-14B (0.753) — model generation matters
+- 72B trained on H200 via NF4 QLoRA (42 GB model footprint, 66 GB peak, 17 h)
 
 ### Track 3: Ensemble
 
-Stacking 5 diverse models (3 fine-tuned + 1 prompted + kNN) → QWK 0.776 (LOO-CV).
+QWK-proportional weighted majority voting over fine-tuned + prompted models
+(composition depends on track, see "Winning Submission per Track" above). Best
+unbiased trial ensemble: 4-model weighted vote → QWK 0.781 (LOO-CV). A
+logistic-regression stacker over the same candidate pool reached 0.776 and was
+superseded by simpler voting on the small (78 questions) trial set.
 
 ## Hardware
 
-- 2× NVIDIA L40S (46 GB VRAM each), CUDA 13.1, Ubuntu 22.04
-- Fine-tuning: bf16 LoRA (bitsandbytes 4-bit broken on L40S)
-- Serving: vLLM for merged models, direct PEFT for 32B
+- Prompt engineering and fine-tuning up to 32B: 2× NVIDIA L40S (46 GB VRAM each), CUDA 13.1, Ubuntu 22.04
+- 72B fine-tuning: 1× NVIDIA H200 NVL (141 GB VRAM), NF4 QLoRA
+- Fine-tuning: bf16 LoRA at 14B/32B (bitsandbytes 4-bit broken on L40S + CUDA 13.1 for models > 7B)
+- Serving: vLLM for merged models, direct PEFT for 32B/72B inference
+
+## Paper §5.3 Error-Analysis Reproduction
+
+`python -m src.strategy_qwen.analysis.error_patterns` reproduces all numbers
+reported in §5.3 of the paper (adjacent/skip-level error splits, leniency
+ratio, per-class precision, cross-model unanimous rates, 72B-vs-majority
+disagreement, distribution shift, short-answer classification rates). Cached
+output: `docs/error_patterns_53.txt`.
 
 ## Links
 

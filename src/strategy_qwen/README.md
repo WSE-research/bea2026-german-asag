@@ -11,15 +11,17 @@ Rubric-based Short Answer Scoring for German (ALICE-LP-1.0 dataset).
 |-------|--------|-----|-----|------------|----------|
 | Qwen2.5-7B | QLoRA 4-bit, r=32, 3ep | 0.726 | 70.9% | 95 min | 1× L40S |
 | Qwen2.5-14B | bf16 LoRA, r=32, 3ep | 0.753 | 74.1% | 124 min | 1× L40S |
-| **Qwen2.5-32B** | **bf16 LoRA, r=32, 3ep** | **0.769** | **75.7%** | **222 min** | **2× L40S** |
-| Stacking (5 models) | LogReg meta-learner | 0.776 | 75.5% | — | CPU |
-| Qwen2.5-72B-AWQ | blocked | — | — | — | needs H200 |
+| Qwen3.5-9B | bf16 LoRA, r=32, 3ep | 0.756 | 74.2% | 110 min | 1× L40S |
+| Qwen2.5-32B | bf16 LoRA, r=32, 3ep | 0.769 | 75.7% | 222 min | 2× L40S |
+| **Qwen2.5-72B** | **NF4 QLoRA, r=32, 3ep** | **0.768** | **75.7%** | **985 min** | **1× H200 NVL** |
+| Weighted vote (7B+14B+32B+Gemini) | QWK-proportional, LOO-CV | 0.781 | — | — | CPU |
+| LogReg stacking (5-cand pool) | Meta-learner, LOO-CV | 0.776 | 75.5% | — | CPU |
 
 ### Prompt Engineering (Qwen3.5-27B-FP8, no fine-tuning)
 
 | Variant | QWK (827 trial) | Description |
 |---------|----------------|-------------|
-| Q26 best-of-breed | 0.721 | German + TF-IDF + rubric-first + adaptive + strict |
+| Q26 best-of-breed | 0.719 | German + TF-IDF + rubric-first + adaptive + strict |
 | Q1 rubric-only | 0.510 | Bare minimum baseline |
 
 ### Comparison with Commercial API
@@ -135,9 +137,9 @@ python -m src.strategy_qwen.evaluation.score_test_comprehensive \
 1. **Prompt-model coupling is checkpoint-specific** — prompts don't transfer across models
 2. **Fine-tuning scaling: 7B (0.726) → 14B (0.753) → 32B (0.769)** with diminishing returns
 3. **Fine-tuned 14B beats Gemini Flash** (0.753 vs 0.748) on unbiased evaluation
-4. **Stacking 5 diverse models** achieves best unbiased QWK (0.776)
+4. **QWK-weighted 4-model vote** (7B+14B+32B+Gemini) beats a 5-model LogReg stacker on LOO-CV (0.781 vs 0.776)
 5. **Confidence thresholds don't help** on fine-tuned models (>99% confident on all predictions)
-6. **72B requires >46 GB VRAM** for LoRA training — not feasible on L40S
+6. **72B fine-tuning** completes on single H200 NVL (141 GB) via NF4 QLoRA — plateau vs 32B on trial OOS, but +0.061 QWK on the unseen-questions test track (0.611 → 0.672)
 
 ## Environment Notes
 

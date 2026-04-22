@@ -1,0 +1,22 @@
+{
+  "model": "72B-QLoRA-trainonly",
+  "variant": "trainonly_trial_unbiased",
+  "train_samples": 7072,
+  "trial_samples": 827,
+  "qwk": 0.767752,
+  "accuracy": 0.756953,
+  "errors": 0,
+  "train_elapsed_s": 59114.8,
+  "score_elapsed_s": 1958.1,
+  "config": {
+    "base_model": "Qwen/Qwen2.5-72B-Instruct",
+    "quantization": "NF4",
+    "lora_r": 32,
+    "lora_alpha": 32,
+    "lr": 0.0002,
+    "epochs": 3,
+    "batch_size": "1x16",
+    "max_length": 2048
+  },
+  "timestamp": "2026-03-29T02:10:26.258704"
+}

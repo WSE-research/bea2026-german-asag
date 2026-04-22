@@ -1,0 +1,8 @@
+{
+  "qwk": 0.8509738406396086,
+  "accuracy": 0.8343409915356711,
+  "errors": 0,
+  "samples": 827,
+  "elapsed_s": 1937.2,
+  "model": "72B-QLoRA-alldata"
+}

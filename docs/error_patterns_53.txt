@@ -1,0 +1,38 @@
+======================================================================
+A. Trial-set error patterns (Qwen2.5-32B train-only, N=827)
+======================================================================
+Accuracy: 0.7461  |  Errors: 210 / 827
+  Adjacent:    198 (94.3%)
+    C/PC:      94 (44.8%)
+    PC/I:      104 (49.5%)
+  Skip-level:  12 (5.7%)
+  Over-score:  119  Under-score: 91  Ratio: 1.31x
+Per-class precision:
+  Correct               P = 0.785
+  Partially correct     P = 0.650
+  Incorrect             P = 0.835
+
+======================================================================
+B. Cross-model agreement on test set
+======================================================================
+  Seen questions (T1, N=2008): N=2008, models=['72B', '32B', '14B', '7B', 'Gemini', 'Q26']
+    Unanimous across 6 models: 1083 (53.9%)
+  Unseen questions (T3, N=3086): N=3086, models=['72B', '32B', '14B', '7B', 'Gemini', 'Q26']
+    Unanimous across 6 models: 1278 (41.4%)
+    72B disagrees with 5-model majority: 689 (22.3%)
+      PC-majority → 72B says Incorrect: 208 (30.2% of disagreements)
+      C-majority  → 72B says PC:       209 (30.3% of disagreements)
+
+======================================================================
+C. Prediction distribution shift (72B)
+======================================================================
+Label                    Train      Seen     Δ train    Unseen     Δ train
+Correct                  0.292     0.294      +0.002     0.264      -0.027
+Partially correct        0.363     0.367      +0.004     0.370      +0.008
+Incorrect                0.345     0.340      -0.006     0.365      +0.020
+
+======================================================================
+D. Short-answer (<20 char) classification rate (72B)
+======================================================================
+  Seen (N=56): {'Partially correct': 7, 'Incorrect': 49}  → Incorrect-rate = 87.5%
+  Unseen (N=88): {'Incorrect': 88}  → Incorrect-rate = 100.0%
