@@ -9,10 +9,11 @@ System for the link:https://edutec.science/bea-2026-shared-task/[BEA 2026 Shared
 Predicts rubric-based scores (Correct / Partially correct / Incorrect) for German student answers
 on the ALICE-LP-1.0 dataset.
 
-*Authors:* https://github.com/jonasgwozdz[Jonas Gwozdz], https://github.com/anbo-de[Andreas Both] — https://www.htwk-leipzig.de/en/htwk-leipzig[Leipzig University of Applied Sciences (HTWK Leipzig)] / https://wse-research.org/#[WSE Research]
+*Authors:* https://github.com/jonasgwozdz[Jonas Gwozdz], https://github.com/anbo-de[Andreas Both] — https://www.htwk-leipzig.de/en/htwk-leipzig[Leipzig University of Applied Sciences (HTWK Leipzig)] / https://wse-research.org/#[Web & Software Engineering Research Group (WSE Research)]
 
 *Status:* Final official leaderboard published 2026-04-07. *WSE Research placed #2 on three tracks (T1 3-way seen 0.790, T2 2-way seen 0.717, T3 3-way unseen 0.672) and #3 on Track 4 (2-way unseen 0.533).*
 
+---
 
 toc::[]
 
