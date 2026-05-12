@@ -160,7 +160,7 @@ output: `docs/error_patterns_53.txt`.
 @inproceedings{gwozdz2026bea,
   title={WSE Research at BEA 2026 Shared Task 2: Multi-Strategy Rubric-Based Short Answer Scoring for German},
   author={Jonas Gwozdz and Andreas Both},
-  booktitle={Proceedings of the 21th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2025)},
+  booktitle={Proceedings of the 21st Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2026)},
   publisher = "Association for Computational Linguistics",
   year={2026}
 }
